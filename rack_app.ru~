@@ -1,0 +1,4 @@
+require './app1.rb'
+require 'haml'
+
+run App.new
