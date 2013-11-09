@@ -1,0 +1,38 @@
+require 'sequel'
+ 
+DB = Sequel.sqlite('data.db')
+#DB.create_table :users do
+#	primary_key :id
+#	String :username, :size=>30, :unique=>true
+#	String :password, :size=>30
+#	String :realname, :size=>60
+#  end
+
+DB.create_table :posts do
+	primary_key :id
+	Integer :user_id, :allow_null=>false 
+	String :title, :size=>500
+	Text :content
+	Datetime :date_created
+	Datetime :date_updated
+   end
+
+DB.create_table :comments do
+	primary key :id
+	Integer :post_id
+	String :author, :size=>60
+	Text :comment
+	Datetime :date_added 
+   end
+
+DB.create_table :tags do
+	primary key :id
+	String :tag, :size=>100
+   end
+
+DB.create_table :post_tags do
+	primary_key :id
+	Integer :post_id, :allow_null=>false
+	Integer :tag_id, :allow_null=>false
+   end
+ 
