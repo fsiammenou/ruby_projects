@@ -31,7 +31,7 @@ Sequel.migration do
 	String :tag, :size=>100
    end
 
-   create_table(:post_tags) do
+   create_table(:posts_tags) do
 	primary_key :id
 	Integer :post_id, :allow_null=>false
 	Integer :tag_id, :allow_null=>false

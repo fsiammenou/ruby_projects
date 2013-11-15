@@ -70,16 +70,10 @@ class App < Sinatra::Application
     #submiting {:action => "/admin/newPost", :method => "post"}
   end
 	
-  post "/admin/newPost" do    
-	#edw tha eixa ton loggedin user kai tha ekana add post
-		#dinontas mono title kai content
-	newpost = Post.create( :user_id => 1, :title => params[:title] , :content => params[:content])	
-	"Post created"
-	redirect to("/admin/viewPost?postid=#{newpost.id}")
-# reply & if ok redirect to admin/post
-# with id=last created			
+ post "/admin/newPost" do 
+    # reply & if ok redirect to admin/post with id=last created 			
   end
-  	
+  
   get "/admin/browsePosts" do
     #haml:allPosts
     #view of posts list, search abilities...??? 
@@ -92,8 +86,6 @@ class App < Sinatra::Application
   
 
   get "/admin/viewPost" do
-	postid=params[postid]
-	"You now should view post with title #{@post1.title}"
     #here is the editpost page
     #in :params somehow we ll have the id of a post to show 
     #haml:editPost

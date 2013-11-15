@@ -1,1 +1,11 @@
-time is #{Time.now}
+%html
+  %head   
+   %title Add New Post
+  %body
+    %h1 Add New Post
+    %form{:action => "/admin/newPost", :method => "post"}
+      %label{:for => "title_id"} Title:
+      %input#title_id{:type => 'text' :name => 'title'}
+      %label{:for => "content_name"} Content:
+      %textarea{:name => "content_name"}
+      %input{:type => "submit", :value => "Create"}

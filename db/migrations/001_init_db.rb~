@@ -39,11 +39,11 @@ Sequel.migration do
  end
 
  down do 
-  # drop_table(:users)
-  # drop_table(:posts) 
-  # drop_table(:commnets) 
-  # drop_table(:tags) 
-  # drop_table(:post_tags) 
+   drop_table(:users)
+   drop_table(:posts) 
+   drop_table(:comments) 
+   drop_table(:tags) 
+   drop_table(:post_tags) 
  end
 
 end 

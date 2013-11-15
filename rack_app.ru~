@@ -1,4 +1,8 @@
+require 'bundler'
+
+Bundler.require
 require './app1.rb'
-require 'haml'
+require './models/users.rb'
+
 
 run App.new

@@ -1,0 +1,11 @@
+%html
+   %head   
+      %title AddNewPost
+   %body
+      %h1 Add New Post
+   %form{:action => "/admin/newPost", :method => "post"}
+      %label{:for => "title"} Title:
+      %input{:type => 'text', :name => 'title'}
+      %label{:for => "content"} Content:
+      %textarea{:name => "content"}
+      %input{:type => 'submit', :value => 'Create'}

@@ -17,6 +17,6 @@ namespace :db do
 
 
 	task :migrate do
-		exec "sequel -m ./db/migrations -M 2 -E sqlite://./db/data.db"
+		exec "sequel -m ./db/migrations -M 1 -E sqlite://./db/data.db"
 	end
 end
