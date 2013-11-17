@@ -1,7 +1,7 @@
 task :default => [:start]
 
 task :start do
-	exec "rackup rack_app.ru"
+	exec "rackup -p 8888 rack_app.ru"
 end
 
 task :db => ["db:init","db:migrate"] do

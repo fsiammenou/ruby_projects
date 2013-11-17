@@ -6,7 +6,6 @@ GEM
     rack (1.5.2)
     rack-protection (1.5.1)
       rack
-    rake (10.1.0)
     sequel (4.4.0)
     sinatra (1.4.4)
       rack (~> 1.4)
@@ -20,7 +19,6 @@ PLATFORMS
 
 DEPENDENCIES
   haml
-  rake
   sequel
   sinatra
   sqlite3

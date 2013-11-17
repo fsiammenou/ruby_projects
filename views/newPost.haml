@@ -6,6 +6,8 @@
    %form{:action => "/admin/newPost", :method => "post"}
       %label{:for => "title"} Title:
       %input{:type => 'text', :name => 'title'}
+      %br
       %label{:for => "content"} Content:
-      %textarea{:name => "content"}
+      %textarea{:name => "content", :rows=> '10', :cols => '50'}
+      %br
       %input{:type => 'submit', :value => 'Create'}

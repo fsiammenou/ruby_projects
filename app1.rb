@@ -40,7 +40,7 @@ class App < Sinatra::Application
 
 
   get "/login" do
-    #haml:loginform
+    haml:loginForm
     #a form
     #containing username password textfields
     #submiting {:action => "/login", :method => "post"}
@@ -48,6 +48,7 @@ class App < Sinatra::Application
 
   post "/login" do
     # authentication using the params by loginform
+    # dinw ta dothenta sto antikeino poy kanei to authentication
     #--> if ok admin part accessible & redirect to /admin
     # for start I keep them accessible to all
   end
@@ -72,15 +73,29 @@ class App < Sinatra::Application
 	
   post "/admin/newPost" do    
 	#edw tha eixa ton loggedin user kai tha ekana add post
-		#dinontas mono title kai content
-	newpost = Post.create( :user_id => 1, :title => params[:title] , :content => params[:content])	
+	#dinontas mono title kai content
+	newpost = Post.create( :user_id => 1, :title => params[:title] , :content => params[:content], :date_created => Date.today)	
 	"Post created"
 	redirect to("/admin/viewPost?postid=#{newpost.id}")
-# reply & if ok redirect to admin/post
-# with id=last created			
+    # reply & if ok redirect to admin/post
+    # with id=last created			
   end
-  	
+  
+	
   get "/admin/browsePosts" do
+    posts = Post.all
+    if posts.empty? 
+	"There are no posts!"
+    else
+	output=''
+       haml:allPosts, :locals=>{:posts=>posts}
+        #output=''
+	#posts.each do |p|
+	#   output << "#{p.title} <br />"
+	#end
+        #return output
+    end
+  
     #haml:allPosts
     #view of posts list, search abilities...??? 
     #multiple forms:
@@ -92,8 +107,14 @@ class App < Sinatra::Application
   
 
   get "/admin/viewPost" do
-	#postid=params[postid]
-	"You now should view post with title #{params[:postid]}"
+    "You now should view post with id #{params[:postid]}"
+    if Post[params[:postid]] == nil
+      "Post with id #{params[:postid]} not found"
+    else
+       post = Post[params[:postid]]
+       haml:editPost, :locals =>{:id=>post.id,:title=>post.title,:content=>post.content}
+	
+    end
     #here is the editpost page
     #in :params somehow we ll have the id of a post to show 
     #haml:editPost
@@ -106,12 +127,35 @@ class App < Sinatra::Application
     #later add ability for taging
   end
   
-  post "/admin/savePost" do
-     #saving reply with ok which just redirects to admin/viewPost
+  post "/admin/viewPost" do
+    if Post[params[:postid]] == nil
+      "Post with id #{params[:postid]} not found"
+    else
+     if params[:submit] == 'Save'
+       postEdited=Post[params[:postid]]
+       postEdited.title=params[:title]
+       postEdited.content=params[:content]
+       postEdited.save
+       "Post updated"
+       redirect to("/admin/viewPost?postid=#{postEdited.id}")
+     else
+       if params[:submit] == 'Delete'	
+         postToDelete=Post[params[:postid]]
+         postToDelete.delete
+         "Post deleted"
+         redirect to("/admin")
+       end
+     end 
+    end
   end
 
   post "/admin/deletePost" do
-    #deletion reply with ok which just redirects to admin/browsPosts
+    if Post[params[:postid]].exists?
+    	Post[params[:postid]].delete
+    	haml:editPost
+    else
+	"Post with id #{params[:postid]} not found"
+    end
   end   
 
 
