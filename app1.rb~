@@ -25,9 +25,9 @@ class App < Sinatra::Application
 
     def protected!
       unless authorized?
-        #response['WWW-Authenticate'] = %(Basic realm="Access Restricted to authenticated users only")
-        #throw(:halt, [401, "Login required\n"])
-        redirect to "/login" 
+        response['WWW-Authenticate'] = %(Basic realm="Access Restricted to authenticated users only")
+        throw(:halt, [401, "Login required\n"])
+        #redirect to "/login" 
         # kalytera se mia selida '/loginRequired' me link to /login
       end
     end
@@ -51,15 +51,25 @@ class App < Sinatra::Application
   end 
 
   get '/' do
-    #haml:home 
+    haml:publicHome 
     # contain welcoming and 
     # links for login or to browsePosts (public homepage)		
-    "Welcome!"
   end
 
   get '/browsePosts' do
     #here will be the public homepage
-    #haml:homepage 
+    posts = Post.all #.order(:date_created).reverse
+    if posts.empty? 
+	"There are no posts!"
+    else
+       "There are saved posts!"
+       haml:publicAllPosts, :locals=>{:posts=>posts}
+        #output=''
+	#posts.each do |p|
+	#   output << "#{p.title} <br />"
+	#end
+        #return output
+    end    
     #view of posts list, search abilities: 
 	# date selection
 	# tag selection
@@ -74,10 +84,24 @@ class App < Sinatra::Application
     #containing the form for comment submition
       #{:action => "/viewPost", :method => "post"}
    #AND a browse link -->redirects to /browsePosts
-    
+    "You now should view post with id #{params[:postid]}"
+    if Post[params[:postid]] == nil
+      "Post with id #{params[:postid]} not found"
+    else
+       post = Post[params[:postid]]
+       com = Comment.filter(:post_id=>params[:postid]).all
+       haml:publicViewPost, :locals=>{:thepost=>post, :pcomments=>com}
+	
+    end
   end
 
   post "/viewPost" do 
+    if (params[:author]==nil or params[:comment]==nil)
+      redirect to "/viewPost?postid=#{params[:postid]}"
+    else
+      Comment.create(:post_id=>params[:postid], :author=> params[:author],:comment=> params[:comment],:date_added=> DateTime.now)	
+      redirect to "/viewPost?postid=#{params[:postid]}"
+     end
     # comment addition information and ok button --> get '/viewPost'
   end
 
@@ -165,7 +189,7 @@ class App < Sinatra::Application
       "Post with id #{params[:postid]} not found"
     else
        post = Post[params[:postid]]
-       haml:editPost, :locals=>{:thepost=>post,:id=>post.id,:title=>post.title,:content=>post.content}
+       haml:editPost, :locals=>{:thepost=>post}
 	
     end
     #here is the editpost page
