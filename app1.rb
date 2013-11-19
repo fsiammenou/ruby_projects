@@ -6,6 +6,49 @@ class App < Sinatra::Application
   configure do
     set :db, Sequel.sqlite('./db/data.db')
   end
+  
+  before "/admin" do
+    protected!
+  end
+  before "/admin/*" do
+    protected!
+  end
+
+  helpers do
+    def dformat(a)
+      if a==nil 
+         ""
+      else
+        a.strftime("%d %b %Y")
+      end
+    end
+
+    def protected!
+      unless authorized?
+        response['WWW-Authenticate'] = %(Basic realm="Access Restricted to authenticated users only")
+        throw(:halt, [401, "Login required\n"])
+        #redirect to "/login" 
+        # kalytera se mia selida '/loginRequired' me link to /login
+      end
+    end
+
+    def authorized?
+      users=User.all
+      @auth ||=  Rack::Auth::Basic::Request.new(request.env)
+      if users.empty?    #default login me admin/admin
+        @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == ['admin', 'admin']
+      else
+        authenicatedUser = false
+        users.each do |u|
+          authenicatedUser = @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == [u.username, u.password] 
+          break if authenicatedUser ==true
+        end
+        authenicatedUser #this is returned 
+      end
+    end
+
+
+  end 
 
   get '/' do
     #haml:home 
@@ -47,6 +90,16 @@ class App < Sinatra::Application
   end
 
   post "/login" do
+   if (params[:username]==nil or params[:password]==nil)
+	"Please give username and password to Login"
+   else
+#does not work
+     @auth ||=  Rack::Auth::Basic::Request.new(request.env)
+     @auth.credentials[0]=params[:username]
+     @auth.credentials[1]=params[:password]
+     redirect to "/admin"
+   end
+
     # authentication using the params by loginform
     # dinw ta dothenta sto antikeino poy kanei to authentication
     #--> if ok admin part accessible & redirect to /admin
@@ -60,7 +113,7 @@ class App < Sinatra::Application
   #************************************************
 
   get "/admin" do
-    #haml:controlpanel
+    haml:adminHome
     #contains links which redirect to newPost and browsePosts (for start)
   end
 
@@ -74,7 +127,7 @@ class App < Sinatra::Application
   post "/admin/newPost" do    
 	#edw tha eixa ton loggedin user kai tha ekana add post
 	#dinontas mono title kai content
-	newpost = Post.create( :user_id => 1, :title => params[:title] , :content => params[:content], :date_created => Date.today)	
+	newpost = Post.create( :user_id => 1, :title => params[:title] , :content => params[:content], :date_created => DateTime.now)	
 	"Post created"
 	redirect to("/admin/viewPost?postid=#{newpost.id}")
     # reply & if ok redirect to admin/post
@@ -83,11 +136,11 @@ class App < Sinatra::Application
   
 	
   get "/admin/browsePosts" do
-    posts = Post.all
+    posts = Post.all #.order(:date_created).reverse
     if posts.empty? 
 	"There are no posts!"
     else
-	output=''
+       "There are saved posts!"
        haml:allPosts, :locals=>{:posts=>posts}
         #output=''
 	#posts.each do |p|
@@ -112,7 +165,7 @@ class App < Sinatra::Application
       "Post with id #{params[:postid]} not found"
     else
        post = Post[params[:postid]]
-       haml:editPost, :locals =>{:id=>post.id,:title=>post.title,:content=>post.content}
+       haml:editPost, :locals=>{:thepost=>post,:id=>post.id,:title=>post.title,:content=>post.content}
 	
     end
     #here is the editpost page
@@ -135,6 +188,7 @@ class App < Sinatra::Application
        postEdited=Post[params[:postid]]
        postEdited.title=params[:title]
        postEdited.content=params[:content]
+       postEdited.date_updated=DateTime.now
        postEdited.save
        "Post updated"
        redirect to("/admin/viewPost?postid=#{postEdited.id}")
