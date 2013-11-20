@@ -5,15 +5,34 @@ class App < Sinatra::Application
   #on the other hand
   configure do
     set :db, Sequel.sqlite('./db/data.db')
+    set :sessions => true
   end
   
-  before "/admin" do
-    protected!
-  end
-  before "/admin/*" do
-    protected!
+
+  register do
+    def auth(parm)
+      condition do
+        redirect "/loginRequired" unless is_userloggedin?      #Þ "/login_required" åöïóïí ðñïóèåóù åíá ôåôïéï route
+      end
+    end
   end
 
+       
+  #enallaktika admin part
+#  if !is_userloggedin? then 
+#     redirect to "/login_required"
+#  end if  
+   
+  get "/loginRequired" do
+    haml:loginRequired
+  end
+  
+
+  get "/logout" do           #ðñïóèçêç logout route
+    session[:user_id] = nil
+  end
+
+  
   helpers do
     def dformat(a)
       if a==nil 
@@ -22,33 +41,23 @@ class App < Sinatra::Application
         a.strftime("%d %b %Y")
       end
     end
-
-    def protected!
-      unless authorized?
-        response['WWW-Authenticate'] = %(Basic realm="Access Restricted to authenticated users only")
-        throw(:halt, [401, "Login required\n"])
-        #redirect to "/login" 
-        # kalytera se mia selida '/loginRequired' me link to /login
-      end
+   
+   def is_userloggedin?
+      @loggedinuser != nil
     end
-
-    def authorized?
-      users=User.all
-      @auth ||=  Rack::Auth::Basic::Request.new(request.env)
-      if users.empty?    #default login me admin/admin
-        @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == ['admin', 'admin']
-      else
-        authenicatedUser = false
-        users.each do |u|
-          authenicatedUser = @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == [u.username, u.password] 
-          break if authenicatedUser ==true
-        end
-        authenicatedUser #this is returned 
-      end
-    end
-
 
   end 
+
+
+  before do       #ðñéí áðü ïôéäÞðïôå
+    if session[:user_id]==nil then 
+       @loggedinuser = nil
+    else
+       @loggedinuser = User[session[:user_id]]
+    end
+  end  
+
+
 
   get '/' do
     haml:publicHome 
@@ -58,7 +67,7 @@ class App < Sinatra::Application
 
   get '/browsePosts' do
     #here will be the public homepage
-    posts = Post.all #.order(:date_created).reverse
+    posts = Post.order(:date_created).reverse
     if posts.empty? 
 	"There are no posts!"
     else
@@ -117,13 +126,21 @@ class App < Sinatra::Application
    if (params[:username]==nil or params[:password]==nil)
 	"Please give username and password to Login"
    else
+    userfound = User.filter(:username=>params[:username], :password=>params[:password]).all
+    if userfound.to_a.empty? then 
+	session[:user_id] = nil
+	"User not found"
+    else
+	session[:user_id] = userfound[0].id
+        "User logged in"  
+        redirect to "/admin"
+    end
 #does not work
-     @auth ||=  Rack::Auth::Basic::Request.new(request.env)
-     @auth.credentials[0]=params[:username]
-     @auth.credentials[1]=params[:password]
-     redirect to "/admin"
+#     @auth ||=  Rack::Auth::Basic::Request.new(request.env)
+ #    @auth.credentials[0]=params[:username]
+#     @auth.credentials[1]=params[:password]
+#     redirect to "/admin"
    end
-
     # authentication using the params by loginform
     # dinw ta dothenta sto antikeino poy kanei to authentication
     #--> if ok admin part accessible & redirect to /admin
@@ -135,23 +152,27 @@ class App < Sinatra::Application
   # so as to check the authentication of the user each time 
   # one of the adnim part's page  is accessed
   #************************************************
-
-  get "/admin" do
+  get "/admin", :auth => :user do
     haml:adminHome
     #contains links which redirect to newPost and browsePosts (for start)
   end
+  
+  get "/admin/" do
+    redirect to "/admin"
+    #contains links which redirect to newPost and browsePosts (for start)
+  end
 
-  get "/admin/newPost" do 
+  get "/admin/newPost", :auth => :user do 
     haml:newPost
     #a form
     #containing textfields for the new post data
     #submiting {:action => "/admin/newPost", :method => "post"}
   end
 	
-  post "/admin/newPost" do    
+  post "/admin/newPost", :auth => :user do    
 	#edw tha eixa ton loggedin user kai tha ekana add post
 	#dinontas mono title kai content
-	newpost = Post.create( :user_id => 1, :title => params[:title] , :content => params[:content], :date_created => DateTime.now)	
+	newpost = Post.create( :user_id => @loggedinuser.id, :title => params[:title] , :content => params[:content], :date_created => DateTime.now)	
 	"Post created"
 	redirect to("/admin/viewPost?postid=#{newpost.id}")
     # reply & if ok redirect to admin/post
@@ -159,8 +180,8 @@ class App < Sinatra::Application
   end
   
 	
-  get "/admin/browsePosts" do
-    posts = Post.all #.order(:date_created).reverse
+  get "/admin/browsePosts", :auth => :user do
+    posts = Post.order(:date_created).reverse
     if posts.empty? 
 	"There are no posts!"
     else
@@ -183,7 +204,7 @@ class App < Sinatra::Application
   end
   
 
-  get "/admin/viewPost" do
+  get "/admin/viewPost", :auth => :user do
     "You now should view post with id #{params[:postid]}"
     if Post[params[:postid]] == nil
       "Post with id #{params[:postid]} not found"
@@ -204,7 +225,7 @@ class App < Sinatra::Application
     #later add ability for taging
   end
   
-  post "/admin/viewPost" do
+  post "/admin/viewPost", :auth => :user do
     if Post[params[:postid]] == nil
       "Post with id #{params[:postid]} not found"
     else
@@ -227,7 +248,7 @@ class App < Sinatra::Application
     end
   end
 
-  post "/admin/deletePost" do
+  post "/admin/deletePost", :auth =>:user do
     if Post[params[:postid]].exists?
     	Post[params[:postid]].delete
     	haml:editPost
