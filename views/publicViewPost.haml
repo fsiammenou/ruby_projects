@@ -1,0 +1,29 @@
+%html
+   %head   
+      %title  ViewPost
+   %body
+      %h1 View Post
+      %h2 You should now see post with id: #{locals[:thepost].id}
+      %a{:href => "/browsePosts"}Back to browse posts
+      %br
+      %br
+   %form{:action => "/viewPost?postid=#{locals[:thepost].id}", :method => "post"}
+      %label{:style=>"font-size:12pt; font-weight:bold"}#{locals[:thepost].title} 
+      %label{:style=>"font-size:10pt; color:grey"}, #{dformat(locals[:thepost].date_created)} by #{User[locals[:thepost].user_id].username}
+      %p #{locals[:thepost].content}
+      -locals[:pcomments].each do |c|
+         %li
+            %label{:style=>"font-size:9pt; color:grey; font-style:italic"}#{c.comment}
+            %label{:id => "1", :style => "font-size: 8pt"} #{dformat(c.date_added)}
+            %label{:id => "1", :style => "font-size: 8pt"} ,by #{c.author}
+      %br
+      %label{:style=>"font-size:10pt"} Add comment here:
+      %br
+      %label{:style=>"font-size:10pt", :for => "author"} Your name:
+      %input{:type => 'text', :name => 'author'}
+      %br
+      %label{:style=>"font-size:10pt", :for => "comment"} Your Comment:
+      %br
+      %textarea{:cols=>"50",:rows=>"2", :name=> 'comment'}
+      %br
+      %input{:type=>'submit', :name=>'submit', :value => 'Add comment'}
