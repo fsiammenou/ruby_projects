@@ -2,8 +2,8 @@
    %head   
       %title  EditPost
    %body
+      %label{:style=>"font-style:italic; font-size:9pt"} #{@loggedinuser.username} is logged in 
       %h1 Edit Post
-      %h2 You should now see post with id: #{locals[:thepost].id}
       %a{:href => "/admin/browsePosts"}Back to browse posts
       %a{:href => "/admin/newPost"}Add new
       %br

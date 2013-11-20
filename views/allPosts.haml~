@@ -5,6 +5,7 @@
       %h1 All Posts
       %a{:href => "/admin/newPost"}Add new
       %br
+      %br
       -locals[:posts].each do |p|
          %li
             %a{:href => "/admin/viewPost?postid=#{p.id}"}#{p.title}

@@ -2,6 +2,7 @@
    %head   
       %title  EditPost
    %body
+      %label{:style=>"font-style:italic; font-size:9pt"} #{@loggedinuser.username} is logged in 
       %h1 Edit Post
       %h2 You should now see post with id: #{locals[:thepost].id}
       %a{:href => "/admin/browsePosts"}Back to browse posts
@@ -9,7 +10,7 @@
       %br
       %br
    %form{:action => "/admin/viewPost?postid=#{locals[:thepost].id}", :method => "post"}
-      %label{:id=>"1", :style => 'font-size: 11; font-style: italic; color:blue'} #{dformat(locals[:thepost].date_created)} by #{User[locals[:thepost].user_id].username}
+      %label{:id=>"1", :style => 'font-size: 11; font-style: italic; color:grey'} #{dformat(locals[:thepost].date_created)} by #{User[locals[:thepost].user_id].username}
       %br
       %label{:for => "title"} Title:
       %input{:type => 'text', :name => 'title', :value => locals[:thepost].title}
