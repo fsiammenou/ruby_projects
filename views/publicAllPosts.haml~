@@ -3,12 +3,9 @@
       %title  AllPosts
    %body
       %h1 All Posts
-      %a{:href => "/admin/newPost"}Add new
-      %br
-      %br
       -locals[:posts].each do |p|
          %li
-            %a{:href => "/admin/viewPost?postid=#{p.id}"}#{p.title}
+            %a{:href => "/viewPost?postid=#{p.id}"}#{p.title}
             %label{:id => "1", :style => "font-size: 9pt"} #{dformat(p.date_created)}
             %label{:id => "1", :style => "font-size: 9pt"} ,by #{User[p.user_id].username}
            

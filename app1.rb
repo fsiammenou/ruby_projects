@@ -96,7 +96,7 @@ class App < Sinatra::Application
   end
 
   post "/viewPost" do 
-    if (params[:author]==nil or params[:comment]==nil)
+    if (params[:author]==nil or params[:author]=="" or params[:comment]==nil or params[:comment]=="")
       redirect to "/viewPost?postid=#{params[:postid]}"
     else
       Comment.create(:post_id=>params[:postid], :author=> params[:author],:comment=> params[:comment],:date_added=> DateTime.now)	

@@ -3,6 +3,7 @@
       %title  AllPosts
    %body
       %h1 All Posts
+      %br
       -locals[:posts].each do |p|
          %li
             %a{:href => "/viewPost?postid=#{p.id}"}#{p.title}
