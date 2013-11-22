@@ -1,0 +1,22 @@
+%html
+   %head   
+      %title  EditPost
+   %body
+      %label{:style=>"font-style:italic; font-size:9pt"} #{@loggedinuser.username} is logged in 
+      %h1 Edit Post
+      %a{:href => "/admin/browsePosts"}Back to browse posts
+      %a{:href => "/admin/newPost"}Add new
+      %br
+      %br
+   %form{:action => "/admin/viewPost?postid=#{locals[:thepost].id}", :method => "post"}
+      %label{:id=>"1", :style => 'font-size: 11; font-style: italic; color:grey'} #{dformat(locals[:thepost].date_created)} by #{User[locals[:thepost].user_id].username}
+      %br
+      %label{:for => "title"} Title:
+      %input{:type => 'text', :name => 'title', :value => locals[:thepost].title}
+      %br
+      %label{:for => "content"} Content:
+      %br
+      %textarea{:name => "content", :rows=> '10', :cols => '50'}#{locals[:thepost].content}
+      %br
+      %input{:type=>'submit', :name=>'submit', :value => 'Save'}
+      %input{:type=>'submit', :name=>'submit', :value => 'Delete'}

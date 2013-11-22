@@ -1,6 +1,6 @@
 Sequel.migration do
- 
-  up do
+
+   up do
    create_table :users do
       primary_key :id, :type => :Integer
       String :username, :unique=>true
@@ -47,15 +47,13 @@ Sequel.migration do
       primary_key :id, :type => :Integer
       foreign_key :tag_id, :tags, :type => :Integer
       foreign_key :post_id, :posts, :type => :Integer
+
+
+   down do 
+      drop_table(:users)
+      drop_table(:posts) 
+      drop_table(:comments) 
+      drop_table(:tags) 
+      drop_table(:posts_tags) 
    end
- end
-
- down do 
-   drop_table(:users)
-   drop_table(:posts) 
-   drop_table(:comments) 
-   drop_table(:tags) 
-   drop_table(:posts_tags) 
- end
-
 end

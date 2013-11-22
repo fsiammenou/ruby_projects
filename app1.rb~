@@ -1,0 +1,222 @@
+
+class App < Sinatra::Application 
+  #we may add a setting for the error to be showm or not
+  #and may use different configuration for users and programmers (us)
+  #on the other hand
+  configure do
+    set :db, Sequel.sqlite('./db/data.db')
+    set :sessions => true
+  end
+  
+
+  register do
+    def auth(parm)
+      condition do
+        redirect "/loginRequired" unless is_userloggedin?     
+      end
+    end
+  end
+
+ 
+   
+  get "/loginRequired" do
+    haml:loginRequired
+  end
+  
+
+  get "/logout" do          
+    session[:user_id] = nil
+    redirect to "/"
+  end
+
+  
+  helpers do
+    def dformat(a)
+      if a==nil 
+         ""
+      else
+        a.strftime("%d %b %Y")
+      end
+    end
+   
+   def is_userloggedin?
+      @loggedinuser != nil
+    end
+
+  end 
+
+
+  before do      
+    if session[:user_id]==nil  
+       @loggedinuser = nil
+    else
+       @loggedinuser = User[session[:user_id]]
+    end
+  end  
+
+
+
+  get '/' do
+    haml:publicHome 
+    # contain welcoming and 
+    # links for login or to browsePosts (public homepage)		
+  end
+
+  get '/browsePosts' do
+    #here will be the public homepage
+    posts = Post.order(:date_created).reverse
+    if posts.empty? 
+	"There are no posts!"
+    else
+       "There are saved posts!"
+       haml:publicAllPosts, :locals=>{:posts=>posts}
+    end    
+    #view of posts list, search abilities: 
+	# date selection
+	# tag selection
+    #click on a post's title (or a "more..." link)
+	#--> redirects to /viewPost with id=the selected
+  end
+
+  get "/viewPost" do
+    #here we see the whole content of a post
+    #in :params somehow we ll have the id of a post to show 
+    #haml:viewPost
+    #containing the form for comment submition
+    #AND a browse link -->redirects to /browsePosts
+    "You now should view post with id #{params[:postid]}"
+    if Post[params[:postid]] == nil
+      "Post with id #{params[:postid]} not found"
+    else
+       post = Post[params[:postid]]
+       com = Comment.filter(:post_id=>params[:postid]).all
+       haml:publicViewPost, :locals=>{:thepost=>post, :pcomments=>com}
+	
+    end
+  end
+
+  post "/viewPost" do 
+    if (params[:author]==nil or params[:author]=="" or params[:comment]==nil or params[:comment]==" )
+      redirect to "/viewPost?postid=#{params[:postid]}"
+    else
+      Comment.create(:post_id=>params[:postid], :author=> params[:author],:comment=> params[:comment],:date_added=> DateTime.now)	
+      redirect to "/viewPost?postid=#{params[:postid]}"
+     end
+  end
+
+
+  get "/login" do
+    haml:loginForm
+    #a form
+    #containing username password textfields
+    #submiting {:action => "/login", :method => "post"}
+  end
+
+  post "/login" do
+   if (params[:username]==nil or params[:password]==nil)
+	"Please give username and password to Login"
+   else
+    userfound = User.filter(:username=>params[:username], :password=>params[:password]).all
+    if userfound.to_a.empty? then 
+	session[:user_id] = nil
+	"User not found"
+    else
+	session[:user_id] = userfound[0].id
+        "User logged in"  
+        redirect to "/admin"
+    end
+
+   end
+    # authentication using the params by loginform
+    # dinw ta dothenta sto antikeino poy kanei to authentication
+    #--> if ok admin part accessible & redirect to /admin
+
+  end
+
+  get "/admin", :auth => :user do
+    haml:adminHome
+    #contains links which redirect to newPost and browsePosts (for start)
+  end
+  
+  get "/admin/" do
+    redirect to "/admin"
+    #contains links which redirect to newPost and browsePosts (for start)
+  end
+
+  get "/admin/newPost", :auth => :user do 
+    haml:newPost
+    #a form
+    #containing textfields for the new post data
+    #submiting {:action => "/admin/newPost", :method => "post"}
+  end
+	
+  post "/admin/newPost", :auth => :user do    
+	newpost = Post.create( :user_id => @loggedinuser.id, :title => params[:title] , :content => params[:content], :date_created => DateTime.now)	
+	"Post created"
+	redirect to("/admin/viewPost?postid=#{newpost.id}")
+    # reply & if ok redirect to admin/post
+    # with id=last created			
+  end
+  
+	
+  get "/admin/browsePosts", :auth => :user do
+    posts = Post.order(:date_created).reverse
+    if posts.empty? 
+	"There are no posts!"
+    else
+       "There are saved posts!"
+       haml:allPosts, :locals=>{:posts=>posts}
+     
+    end
+  
+    #link for new post --> get '/admin/newPost'
+    #click on a post's title--> redirects to admin/viewPost
+		# with id=the selected
+
+  end
+  
+
+  get "/admin/viewPost", :auth => :user do
+    "You now should view post with id #{params[:postid]}"
+    if Post[params[:postid]] == nil
+      "Post with id #{params[:postid]} not found"
+    else
+       post = Post[params[:postid]]
+       haml:editPost, :locals=>{:thepost=>post}
+	
+    end
+    #here is the editpost page
+    #in :params somehow we ll have the id of a post to show 
+    #haml:editPost
+    #containing save button for changes -->stay in page 
+
+    #later add ability for taging
+  end
+  
+  post "/admin/viewPost", :auth => :user do
+    if Post[params[:postid]] == nil
+      "Post with id #{params[:postid]} not found"
+    else
+     if params[:submit] == 'Save'
+       postEdited=Post[params[:postid]]
+       postEdited.title=params[:title]
+       postEdited.content=params[:content]
+       postEdited.date_updated=DateTime.now
+       postEdited.save
+       "Post updated"
+       redirect to("/admin/viewPost?postid=#{postEdited.id}")
+     else
+       if params[:submit] == 'Delete'	
+         postToDelete=Post[params[:postid]]
+         postToDelete.delete
+         "Post deleted"
+         redirect to("/admin")
+       end
+     end 
+    end
+  end
+
+  
+
+end
+

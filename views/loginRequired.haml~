@@ -1,0 +1,8 @@
+%html
+   %head   
+      %title  LoginRequired
+   %body
+      %h1 Unauthorised user, please login first
+      %a{:href=> "/login"}Login
+     
+

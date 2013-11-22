@@ -1,0 +1,6 @@
+%html
+   %head   
+      %title  BrowsePosts
+   %body
+      %h2 You should now see post with title: locals[:title]
+      %br
