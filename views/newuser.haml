@@ -1,0 +1,293 @@
+!!!
+/[if IE 8] <html lang="en" class="ie8 no-js">
+/[if IE 9] <html lang="en" class="ie9 no-js">
+/ [if !IE]><!
+%html.no-js{lang: "en"}
+  / <![endif]
+  / BEGIN HEAD
+  %head
+    %meta{charset: "utf-8"}/
+    %title Sinatra Blog | New User
+    %meta{content: "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    %meta{content: "width=device-width, initial-scale=1.0", name: "viewport"}/
+    %meta{content: "", name: "description"}/
+    %meta{content: "", name: "author"}/
+    %meta{content: "320", name: "MobileOptimized"}/
+    / BEGIN GLOBAL MANDATORY STYLES
+    %link{href: url("/assets/plugins/font-awesome/css/font-awesome.min.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/bootstrap/css/bootstrap.min.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/uniform/css/uniform.default.css"), rel: "stylesheet", type: "text/css"}/
+    / END GLOBAL MANDATORY STYLES
+    / BEGIN PAGE LEVEL STYLES
+    %link{href: url("/assets/plugins/bootstrap-fileupload/bootstrap-fileupload.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/gritter/css/jquery.gritter.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/select2/select2_metro.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/clockface/css/clockface.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/bootstrap-datepicker/css/datepicker.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/bootstrap-timepicker/compiled/timepicker.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/bootstrap-colorpicker/css/colorpicker.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/bootstrap-daterangepicker/daterangepicker-bs3.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/bootstrap-datetimepicker/css/datetimepicker.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/jquery-multi-select/css/multi-select.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/bootstrap-switch/static/stylesheets/bootstrap-switch-metro.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/jquery-tags-input/jquery.tagsinput.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/bootstrap-markdown/css/bootstrap-markdown.min.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/data-tables/DT_bootstrap.css"), rel: "stylesheet", type: "text/css"}/
+    / END PAGE LEVEL STYLES
+    / BEGIN THEME STYLES
+    %link{href: url("/assets/css/style-metronic.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/css/style.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/css/style-responsive.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/css/plugins.css"), rel: "stylesheet", type: "text/css"}/
+    %link#style_color{href: url("/assets/css/themes/default.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/css/custom.css"), rel: "stylesheet", type: "text/css"}/
+    / END THEME STYLES
+    %link{href: "favicon.ico", rel: "shortcut icon"}/
+  / END HEAD
+  / BEGIN BODY
+  %body.page-header-fixed
+    / BEGIN HEADER
+    .header.navbar.navbar-inverse.navbar-fixed-top
+      / BEGIN TOP NAVIGATION BAR
+      .header-inner
+        / BEGIN LOGO
+        %a.navbar-brand{href: url("/admin")}
+          %img.img-responsive{alt: "logo", src: url("/assets/img/logo.png")}/
+        / END LOGO
+        / BEGIN RESPONSIVE MENU TOGGLER
+        %a.navbar-toggle{"data-target" => ".navbar-collapse", "data-toggle" => "collapse", href: "javascript:;"}
+          %img{alt: "", src: url("/assets/img/menu-toggler.png")}/
+        / END RESPONSIVE MENU TOGGLER
+        / BEGIN TOP NAVIGATION MENU
+        %ul.nav.navbar-nav.pull-right
+          / BEGIN USER LOGIN DROPDOWN
+          %li.dropdown.user
+            %a.dropdown-toggle{"data-close-others" => "true", "data-hover" => "dropdown", "data-toggle" => "dropdown", href: "#"}
+              - @auth_user = User[session[:user_id]]
+              %img{alt: "", src: "http://gravatar.com/avatar/#{md5(@auth_user.email)}?s=29"}/
+              %span.username= "#{@auth_user.first_name} #{@auth_user.last_name}"
+              %i.icon-angle-down
+            %ul.dropdown-menu
+              %li
+                %a{href: "#"}
+                  %i.icon-user
+                  My Profile
+              %li
+                %a{href: url("/logout")}
+                  %i.icon-key
+                  Log Out
+          / END USER LOGIN DROPDOWN
+        / END TOP NAVIGATION MENU
+      / END TOP NAVIGATION BAR
+    / END HEADER
+    .clearfix
+    / BEGIN CONTAINER
+    .page-container
+      / BEGIN SIDEBAR
+      .page-sidebar.navbar-collapse.collapse
+        / BEGIN SIDEBAR MENU
+        %ul.page-sidebar-menu
+          %li{style: "margin-bottom: 35px;"}
+            / BEGIN SIDEBAR TOGGLER BUTTON
+            .sidebar-toggler.hidden-phone
+            / BEGIN SIDEBAR TOGGLER BUTTON
+          %li.start
+            %a{href: "/"}
+              %i.icon-home
+              %span.title Dashboard
+              %span.selected
+          %li
+            %a{href: "javascript:;"}
+              %i.icon-file-alt
+              %span.title Posts
+              %span.arrow
+            %ul.sub-menu
+              %li
+                %a{href: "/admin/posts"} All posts
+              %li
+                %a{href: "/admin/post/new"} Add new
+              %li
+                %a{href: "/admin/categories"} Categories
+              %li
+                %a{href: "/admin/tags"} Tags
+          %li
+            %a{href: "/admin/comments"}
+              %i.icon-comments-alt
+              %span.title Comments
+          %li.active
+            %a{href: "javascript:;"}
+              %i.icon-user
+              %span.title Users
+              %span.arrow
+            %ul.sub-menu
+              %li
+                %a{href: "/admin/users"} All users
+              %li.active
+                %a{href: "/admin/user/new"} Add new
+        / END SIDEBAR MENU
+      / END SIDEBAR
+      / BEGIN PAGE
+      .page-content
+        / BEGIN PAGE HEADER
+        .row
+          .col-md-12
+            / BEGIN PAGE TITLE & BREADCRUMB
+            %h3.page-title
+              Add new user
+              %small
+            %ul.page-breadcrumb.breadcrumb
+              %li
+                %i.icon-home
+                %a{href: "/admin"} Home
+                %i.icon-angle-right
+              %li Add new user
+            / END PAGE TITLE & BREADCRUMB
+        / END PAGE HEADER
+        / BEGIN PAGE CONTENT
+        .row
+          .col-md-12
+            - if (params[:msg] && params[:msg] == "success")
+              .alert.alert-success
+                %button.close{"aria-hidden" => "true", "data-dismiss" => "alert", type: "button"}
+                User has been saved!
+            - elsif (params[:msg] && params[:msg] == "error")
+              .alert.alert-danger
+                %button.close{"aria-hidden" => "true", "data-dismiss" => "alert", type: "button"}
+                User has not been saved!
+
+            .portlet.box.grey
+              .portlet-title
+                .caption Add new user
+                .tools
+                  %a.collapse{href: "javascript:;"}
+              .portlet-body.form
+                / BEGIN FORM
+                %form.form-horizontal.form-bordered{action: "/admin/user/save", method: "post"}
+                  - if @id
+                    %input.form-control{type: "hidden", name: "action", value: "edit"}/
+                    %input.form-control{type: "hidden", name: "id", value: "#{@id}"}/
+                  - else
+                    %input.form-control{type: "hidden", name: "action", value: "save"}/
+
+                  .form-body
+                    .row.form-group
+                      %label.control-label.col-md-3 Username
+                      .col-md-9
+                        - if @user
+                          %input.form-control{type: "text", name: "username", value: "#{@user[:username]}"}
+                        - else
+                          %input.form-control{type: "text", name: "username"}
+                    .row.form-group
+                      %label.control-label.col-md-3 First Name
+                      .col-md-9
+                        - if @user
+                          %input.form-control{type: "text", name: "first_name", value: "#{@user[:first_name]}"}
+                        - else
+                          %input.form-control{type: "text", name: "first_name"}
+                    .row.form-group
+                      %label.control-label.col-md-3 Last Name
+                      .col-md-9
+                        - if @user
+                          %input.form-control{type: "text", name: "last_name", value: "#{@user[:last_name]}"}
+                        - else
+                          %input.form-control{type: "text", name: "last_name"}
+                    .row.form-group
+                      %label.control-label.col-md-3 E-mail
+                      .col-md-9
+                        - if @user
+                          %input.form-control{type: "email", name: "email", value: "#{@user[:email]}"}
+                        - else
+                          %input.form-control{type: "email", name: "email"}
+                    .row.form-group
+                      %label.control-label.col-md-3 Password
+                      .col-md-9
+                        %input.form-control{type: "password", name: "password"}
+                    .row.form-group
+                      %label.control-label.col-md-3 Description
+                      .col-md-9
+                        - if @user
+                          %textarea.form-control{rows: "5", name: "description"}= @user[:description]
+                        - else
+                          %textarea.form-control{rows: "5", name: "description"}
+                    .row.form-group
+                      %label.control-label.col-md-3{style: "padding-top: 10px;"} Active/Inactive
+                      .col-md-9
+                        - if @user and (@user[:status] != nil)
+                          %input.form-control{checked: "checked", type: "checkbox", name: "status", value: "1"}
+                        - else
+                          %input.form-control{type: "checkbox", name: "status", value: "1"}
+                    .row.form-group.last
+                      %label.control-label.col-md-3 User Level
+                      .col-md-9
+                        %select.form-control{name: "level"}
+                          %option{value: "1"} Admin
+                          %option{value: "2"} Author
+                  .form-actions.right
+                    %button.btn.green{type: "submit"} Save
+                / END FORM
+        / END PAGE CONTENT
+      / END PAGE
+    / END CONTAINER
+    / BEGIN FOOTER
+    .footer
+      .footer-inner
+        2013 © Sinatra Blog by masters.
+      .footer-tools
+        %span.go-top
+          %i.icon-angle-up
+    / END FOOTER
+    / BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time)
+    / BEGIN CORE PLUGINS
+    /[if lt IE 9]
+      %script{src: url("/assets/plugins/respond.min.js"), type: "text/javascript"}
+      %script{src: url("/assets/plugins/excanvas.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery-1.10.2.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery-migrate-1.2.1.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap/js/bootstrap.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap/js/bootstrap2-typeahead.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-hover-dropdown/twitter-bootstrap-hover-dropdown.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery.blockui.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery.cookie.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/uniform/jquery.uniform.min.js"), type: "text/javascript"}
+    / END CORE PLUGINS
+    / BEGIN PAGE LEVEL PLUGINS
+    %script{src: url("/assets/plugins/fuelux/js/spinner.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/ckeditor/ckeditor.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-fileupload/bootstrap-fileupload.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/select2/select2.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-wysihtml5/wysihtml5-0.3.0.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/clockface/js/clockface.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-daterangepicker/moment.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-daterangepicker/daterangepicker.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-timepicker/js/bootstrap-timepicker.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery-inputmask/jquery.inputmask.bundle.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery.input-ip-address-control-1.0.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery-multi-select/js/jquery.multi-select.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery-multi-select/js/jquery.quicksearch.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery.pwstrength.bootstrap/src/pwstrength.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-switch/static/js/bootstrap-switch.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery-tags-input/jquery.tagsinput.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-markdown/js/bootstrap-markdown.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-maxlength/bootstrap-maxlength.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/data-tables/jquery.dataTables.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/data-tables/DT_bootstrap.js"), type: "text/javascript"}
+    / END PAGE LEVEL PLUGINS
+    / BEGIN PAGE LEVEL SCRIPTS
+    %script{src: url("/assets/scripts/app.js")}
+    %script{src: url("/assets/scripts/form-components.js")}
+    %script{src: url("/assets/scripts/table-editable.js")}
+    / END PAGE LEVEL SCRIPTS
+    :javascript
+      jQuery(document).ready(function() {       
+         // initiate layout and plugins
+         App.init();
+         FormComponents.init();
+         TableEditable.init();
+      });
+  / END BODY

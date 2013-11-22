@@ -1,0 +1,434 @@
+!!!
+/[if IE 8] <html lang="en" class="ie8 no-js">
+/[if IE 9] <html lang="en" class="ie9 no-js">
+/ [if !IE]><!
+%html.no-js{lang: "en"}
+  / <![endif]
+  / BEGIN HEAD
+  %head
+    %meta{charset: "utf-8"}/
+    - if params[:id]
+      %title Sinatra Blog | Edit post
+    - else
+      %title Sinatra Blog | Add new post
+    %meta{content: "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    %meta{content: "width=device-width, initial-scale=1.0", name: "viewport"}/
+    %meta{content: "", name: "description"}/
+    %meta{content: "", name: "author"}/
+    %meta{content: "320", name: "MobileOptimized"}/
+    / BEGIN GLOBAL MANDATORY STYLES
+    %link{href: url("/assets/plugins/font-awesome/css/font-awesome.min.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/bootstrap/css/bootstrap.min.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/uniform/css/uniform.default.css"), rel: "stylesheet", type: "text/css"}/
+    / END GLOBAL MANDATORY STYLES
+    / BEGIN PAGE LEVEL STYLES
+    %link{href: url("/assets/plugins/bootstrap-fileupload/bootstrap-fileupload.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/gritter/css/jquery.gritter.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/select2/select2_metro.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/clockface/css/clockface.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/bootstrap-datepicker/css/datepicker.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/bootstrap-timepicker/compiled/timepicker.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/bootstrap-colorpicker/css/colorpicker.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/bootstrap-daterangepicker/daterangepicker-bs3.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/bootstrap-datetimepicker/css/datetimepicker.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/jquery-multi-select/css/multi-select.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/bootstrap-switch/static/stylesheets/bootstrap-switch-metro.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/jquery-tags-input/jquery.tagsinput.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/bootstrap-markdown/css/bootstrap-markdown.min.css"), rel: "stylesheet", type: "text/css"}/
+    / END PAGE LEVEL STYLES
+    / BEGIN THEME STYLES
+    %link{href: url("/assets/css/style-metronic.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/css/style.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/css/style-responsive.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/css/plugins.css"), rel: "stylesheet", type: "text/css"}/
+    %link#style_color{href: url("/assets/css/themes/default.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/css/custom.css"), rel: "stylesheet", type: "text/css"}/
+    / END THEME STYLES
+    %link{href: "favicon.ico", rel: "shortcut icon"}/
+  / END HEAD
+  / BEGIN BODY
+  %body.page-header-fixed
+    / BEGIN HEADER
+    .header.navbar.navbar-inverse.navbar-fixed-top
+      / BEGIN TOP NAVIGATION BAR
+      .header-inner
+        / BEGIN LOGO
+        %a.navbar-brand{href: url("/admin")}
+          %img.img-responsive{alt: "logo", src: url("/assets/img/logo.png")}/
+        / END LOGO
+        / BEGIN RESPONSIVE MENU TOGGLER
+        %a.navbar-toggle{"data-target" => ".navbar-collapse", "data-toggle" => "collapse", href: "javascript:;"}
+          %img{alt: "", src: url("/assets/img/menu-toggler.png")}/
+        / END RESPONSIVE MENU TOGGLER
+        / BEGIN TOP NAVIGATION MENU
+        %ul.nav.navbar-nav.pull-right
+          / BEGIN USER LOGIN DROPDOWN
+          %li.dropdown.user
+            %a.dropdown-toggle{"data-close-others" => "true", "data-hover" => "dropdown", "data-toggle" => "dropdown", href: "#"}
+              - @auth_user = User[session[:user_id]]
+              %img{alt: "", src: "http://gravatar.com/avatar/#{md5(@auth_user.email)}?s=29"}/
+              %span.username= "#{@auth_user.first_name} #{@auth_user.last_name}"
+              %i.icon-angle-down
+            %ul.dropdown-menu
+              %li
+                %a{href: "#"}
+                  %i.icon-user
+                  My Profile
+              %li
+                %a{href: url("/logout")}
+                  %i.icon-key
+                  Log Out
+          / END USER LOGIN DROPDOWN
+        / END TOP NAVIGATION MENU
+      / END TOP NAVIGATION BAR
+    / END HEADER
+    .clearfix
+    / BEGIN CONTAINER
+    .page-container
+      / BEGIN SIDEBAR
+      .page-sidebar.navbar-collapse.collapse
+        / BEGIN SIDEBAR MENU
+        %ul.page-sidebar-menu
+          %li{style: "margin-bottom: 35px;"}
+            / BEGIN SIDEBAR TOGGLER BUTTON
+            .sidebar-toggler.hidden-phone
+            / BEGIN SIDEBAR TOGGLER BUTTON
+          %li.start
+            %a{href: url("/admin")}
+              %i.icon-home
+              %span.title Dashboard
+              %span.selected
+          %li.active
+            %a{href: "javascript:;"}
+              %i.icon-file-alt
+              %span.title Posts
+              %span.arrow
+            %ul.sub-menu
+              %li
+                %a{href: url("/admin/post/all")} All posts
+              - if params[:id]
+                %li
+                  %a{href: url("/admin/post/new")} Add new
+              - else
+                %li.active
+                  %a{href: url("/admin/post/new")} Add new
+              %li
+                %a{href: url("/admin/categories")} Categories
+              %li
+                %a{href: url("/admin/tags")} Tags
+          %li
+            %a{href: url("/admin/comments")}
+              %i.icon-comments-alt
+              %span.title Comments
+          %li
+            %a{href: "javascript:;"}
+              %i.icon-user
+              %span.title Users
+              %span.arrow
+            %ul.sub-menu
+              %li
+                %a{href: url("/admin/users")} All users
+              %li
+                %a{href: url("/admin/user/new")} Add new
+        / END SIDEBAR MENU
+      / END SIDEBAR
+      / BEGIN PAGE
+      .page-content
+        / BEGIN PAGE HEADER
+        .row
+          .col-md-12
+            / BEGIN PAGE TITLE & BREADCRUMB
+            - if params[:id]
+              %h3.page-title Edit post
+            - else
+              %h3.page-title Add new post
+            %ul.page-breadcrumb.breadcrumb
+              %li
+                %i.icon-home
+                %a{href: url("/admin")} Home
+                %i.icon-angle-right
+              - if @id
+                %li Edit post
+              - else
+                %li Add new post
+            / END PAGE TITLE & BREADCRUMB
+        / END PAGE HEADER
+        / BEGIN PAGE CONTENT
+        .row
+          - if (params[:msg] && params[:msg] == "success")
+            .col-md-12
+              .alert.alert-success
+                %button.close{"aria-hidden" => "true", "data-dismiss" => "alert", type: "button"}
+                Post has been saved!  
+                %a{href: "/post/#{@id}/view", target: "_blank"} View this post
+          - elsif (params[:msg] && params[:msg] == "error")
+            .col-md-12
+              .alert.alert-danger
+                %button.close{"aria-hidden" => "true", "data-dismiss" => "alert", type: "button"}
+                Post has not been saved!
+
+          %form#frm_newpost{action: url("/admin/post/save"), method: "post", enctype: 'multipart/form-data'}
+            - if @id
+              %input.form-control{type: "hidden", name: "action", value: "edit"}/
+              %input.form-control{type: "hidden", name: "id", value: "#{@id}"}/
+            - else
+              %input.form-control{type: "hidden", name: "action", value: "save"}/
+            .col-md-9
+              / BEGIN FORM
+              .form
+                .form-horizontal
+                  .form-group
+                    .col-md-12
+                      - if (@post and @post[:title])
+                        %input#title.form-control{type: "text", name: "title", value: "#{@post[:title]}", placeholder: "Enter post title"}/
+                      - else
+                        %input#title.form-control{type: "text", name: "title", value: "", placeholder: "Enter post title"}/
+                  .form-group
+                    .col-md-12
+                      - if (@post and @post[:content])
+                        %textarea.ckeditor.form-control{name: "content", rows: "35"}= @post[:content]
+                      - else
+                        %textarea.ckeditor.form-control{name: "content", rows: "35"}
+              / END FROM
+            .col-md-3
+              / BEGIN ACTION PORTLET
+              .portlet.box.grey
+                .portlet-title
+                  .caption Take Action
+                  .tools
+                    %a.collapse{href: "javascript:;"}
+                .portlet-body
+                  .clearfix
+                    %input.btn.green.btn-block{type: "submit", name: "btn_save", value: "Save"}/
+              / END ACTION PORTLET
+              / BEGIN STATUS PORTLET
+              .portlet.box.grey
+                .portlet-title
+                  .caption Status
+                  .tools
+                    %a.collapse{href: "javascript:;"}
+                .portlet-body
+                  .clearfix
+                    .radio-list
+                      %label
+                        - if (@post and (@post[:status] == 0))
+                          %input{checked: "checked", name: "status", type: "radio", value: "0"}/
+                        - else
+                          %input{name: "status", type: "radio", value: "0"}/
+                        Unpublished
+                      %label
+                        - if (@post and (@post[:status] == 1))
+                          %input{checked: "checked", name: "status", type: "radio", value: "1"}/
+                        - else
+                          %input{name: "status", type: "radio", value: "1"}/
+                        Published
+              / END STATUS PORTLET
+
+              / BEGIN POST TYPE PORTLET
+              .portlet.box.grey
+                .portlet-title
+                  .caption Post type
+                  .tools
+                    %a.collapse{href: "javascript:;"}
+                .portlet-body
+                  .clearfix
+                    .radio-list
+                      %label
+                        - if (@post and (@post[:type] == 'standard'))
+                          %input{checked: "checked", name: "type", type: "radio", value: "standard"}/
+                        - else
+                          %input{name: "type", type: "radio", value: "standard"}/
+                        Standard
+                      %label
+                        - if (@post and (@post[:type] == 'video'))
+                          %input{checked: "checked", name: "type", type: "radio", value: "video"}/
+                        - else
+                          %input{name: "type", type: "radio", value: "video"}/
+                        Video
+                      %label
+                        - if (@post and (@post[:type] == 'audio'))
+                          %input{checked: "checked", name: "type", type: "radio", value: "audio"}/
+                        - else
+                          %input{name: "type", type: "radio", value: "audio"}/
+                        Audio
+              / END POST TYPE PORTLET
+
+              / To be implemented on 3rd iteration
+              / BEGIN CATEGORIES PORTLET
+              .portlet.box.grey.hide
+                .portlet-title
+                  .caption Categories
+                  .tools
+                    %a.collapse{href: "javascript:;"}
+                .portlet-body
+                  .clearfix
+                    .checkbox-list
+                      %label
+                        %input{name: "category[]", type: "checkbox", value: "category_id"}/
+                        Category 1
+                      %label
+                        %input{name: "category[]", type: "checkbox", value: "category_id"}/
+                        Category 2
+                      %label
+                        %input{name: "category[]", type: "checkbox", value: "category_id"}/
+                        Category 3
+                  .clearfix
+                    %a{href: "#"} Add new category
+              / END CATEGORIES PORTLET
+
+              / To be implemented on 3rd iteration
+              / BEGIN TAGS PORTLET
+              .portlet.box.grey.hide
+                .portlet-title
+                  .caption Tags
+                  .tools
+                    %a.collapse{href: "javascript:;"}
+                .portlet-body
+                  .clearfix
+                    %input#tags.form-control.select2{type: "hidden", name: "tags", value: ""}/
+              / END TAGS PORTLET
+
+              / BEGIN CHOOSE FILE PORTLET
+              .portlet.box.grey.type.standard
+                .portlet-title
+                  .caption Choose image
+                  .tools
+                    %a.collapse{href: "javascript:;"}
+                .portlet-body
+                  .clearfix
+                    .fileupload.fileupload-new{"data-provides" => "fileupload"}
+                      - if (@post and (@post[:type] == "standard"))
+                        .fileupload-new.thumbnail{style: "width: auto; height: auto;"}
+                          %img{alt: "", src: url("/uploads/#{@post[:filename]}")}/
+                      - else
+                        .fileupload-new.thumbnail{style: "width: 200px; height: 150px;"}
+                          %img{alt: "", src: "http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image"}/
+
+                      .fileupload-preview.fileupload-exists.thumbnail{style: "max-width: 200px; max-height: 150px; line-height: 20px;"}
+                      %div
+                        %span.btn.default.btn-file
+                          %span.fileupload-new
+                            %i.icon-paper-clip
+                            Select image
+                          %span.fileupload-exists
+                            %i.icon-undo
+                            Change
+                          %input.default{type: "file", name: "myfile"}/
+                        %a.btn.red.fileupload-exists{"data-dismiss" => "fileupload", href: "#"}
+                          %i.icon-trash
+                          Remove
+              / END CHOOSE FILE PORTLET
+              / BEGIN VIDEO TYPE PORTLET
+              .portlet.box.grey.type.video
+                .portlet-title
+                  .caption Youtube or vimeo URL
+                  .tools
+                    %a.collapse{href: "javascript:;"}
+                .portlet-body
+                  .clearfix
+                    - if @post and (@post[:type] == 'video')
+                      %input.form-control{type: "text", name: "video_url", value: "#{@post[:filename]}", placeholder: "ex: http://www.youtube.com/embed/7GHT-TSiZio"}/
+                    - else
+                      %input.form-control{type: "text", name: "video_url", placeholder: "ex: http://www.youtube.com/embed/7GHT-TSiZio"}/
+              / END VIDEO TYPE PORTLET
+              / BEGIN AUDIO TYPE PORTLET
+              .portlet.box.grey.type.audio
+                .portlet-title
+                  .caption Soundcloud URL
+                  .tools
+                    %a.collapse{href: "javascript:;"}
+                .portlet-body
+                  .clearfix
+                    - if @post and (@post[:type] == 'audio')
+                      %input.form-control{type: "text", name: "audio_url", value: "#{@post[:filename]}", placeholder: "ex: https://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F99176236&amp;color=ff6600&amp;auto_play=false&amp;show_artwork=false"}/
+                    - else
+                      %input.form-control{type: "text", name: "audio_url", placeholder: "ex: https://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F99176236&amp;color=ff6600&amp;auto_play=false&amp;show_artwork=false"}/
+              / END AUDIO TYPE PORTLET
+        / END PAGE CONTENT
+      / END PAGE
+    / END CONTAINER
+    / BEGIN FOOTER
+    .footer
+      .footer-inner
+        2013 © Sinatra Blog by masters.
+      .footer-tools
+        %span.go-top
+          %i.icon-angle-up
+    / END FOOTER
+    / BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time)
+    / BEGIN CORE PLUGINS
+    /[if lt IE 9]
+      %script{src: url("/assets/plugins/respond.min.js")}
+      %script{src: url("/assets/plugins/excanvas.min.js")}
+    %script{src: url("/assets/plugins/jquery-1.10.2.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery-migrate-1.2.1.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap/js/bootstrap.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap/js/bootstrap2-typeahead.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-hover-dropdown/twitter-bootstrap-hover-dropdown.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery.blockui.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery.cookie.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/uniform/jquery.uniform.min.js"), type: "text/javascript"}
+    / END CORE PLUGINS
+    / BEGIN PAGE LEVEL PLUGINS
+    %script{src: url("/assets/plugins/fuelux/js/spinner.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/ckeditor/ckeditor.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-fileupload/bootstrap-fileupload.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/select2/select2.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-wysihtml5/wysihtml5-0.3.0.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/clockface/js/clockface.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-daterangepicker/moment.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-daterangepicker/daterangepicker.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-timepicker/js/bootstrap-timepicker.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery-inputmask/jquery.inputmask.bundle.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery.input-ip-address-control-1.0.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery-multi-select/js/jquery.multi-select.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery-multi-select/js/jquery.quicksearch.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery.pwstrength.bootstrap/src/pwstrength.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-switch/static/js/bootstrap-switch.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery-tags-input/jquery.tagsinput.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-markdown/js/bootstrap-markdown.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-maxlength/bootstrap-maxlength.min.js"), type: "text/javascript"}
+    / END PAGE LEVEL PLUGINS
+    / BEGIN PAGE LEVEL SCRIPTS
+    %script{src: url("/assets/scripts/app.js")}
+    %script{src: url("/assets/scripts/form-components.js")}
+    / END PAGE LEVEL SCRIPTS
+    :javascript
+      jQuery(document).ready(function() {       
+        // initiate layout and plugins
+        App.init();
+        FormComponents.init();
+
+        $('#title').focus();
+
+        $("#tags").select2({
+        tags: ["red", "green", "blue", "yellow", "pink"]
+        });
+
+        $('.portlet.box.type').hide();
+        $('.portlet.box.type.'+ $('input[name="type"][checked="checked"]').val() ).show();
+
+        $('input[name="type"]:radio').change(function(){
+          $('.portlet.box.type').hide();
+
+          switch($(this).val())
+          {
+            case 'standard':
+              $('.portlet.box.standard').fadeIn();
+              break;
+            case 'video':
+              $('.portlet.box.video').fadeIn();
+              break;
+            case 'audio':
+              $('.portlet.box.audio').fadeIn();
+              break;
+          }
+        });
+      });
+  / END BODY

@@ -1,0 +1,236 @@
+!!!
+/[if IE 8] <html lang="en" class="ie8 no-js">
+/[if IE 9] <html lang="en" class="ie9 no-js">
+/ [if !IE]><!
+%html.no-js{lang: "en"}
+  / <![endif]
+  / BEGIN HEAD
+  %head
+    %meta{charset: "utf-8"}/
+    %title Sinatra Blog | Posts
+    %meta{content: "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    %meta{content: "width=device-width, initial-scale=1.0", name: "viewport"}/
+    %meta{content: "", name: "description"}/
+    %meta{content: "", name: "author"}/
+    %meta{content: "320", name: "MobileOptimized"}/
+    / BEGIN GLOBAL MANDATORY STYLES
+    %link{href: url("/assets/plugins/font-awesome/css/font-awesome.min.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/bootstrap/css/bootstrap.min.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/uniform/css/uniform.default.css"), rel: "stylesheet", type: "text/css"}/
+    / END GLOBAL MANDATORY STYLES
+    / BEGIN PAGE LEVEL STYLES
+    %link{href: url("/assets/plugins/select2/select2_metro.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/plugins/data-tables/DT_bootstrap.css"), rel: "stylesheet"}/
+    %link{href: url("/assets/plugins/bootstrap-modal/css/bootstrap-modal-bs3patch.css"), rel: "stylesheet"}/
+    %link{href: url("/assets/plugins/bootstrap-modal/css/bootstrap-modal.css"), rel: "stylesheet"}/
+    / END PAGE LEVEL STYLES
+    / BEGIN THEME STYLES
+    %link{href: url("/assets/css/style-metronic.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/css/style.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/css/style-responsive.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/css/plugins.css"), rel: "stylesheet", type: "text/css"}/
+    %link#style_color{href: url("/assets/css/themes/default.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/assets/css/custom.css"), rel: "stylesheet", type: "text/css"}/
+    / END THEME STYLES
+    %link{href: "favicon.ico", rel: "shortcut icon"}/
+  / END HEAD
+  / BEGIN BODY
+  %body.page-header-fixed
+    / BEGIN HEADER
+    .header.navbar.navbar-inverse.navbar-fixed-top
+      / BEGIN TOP NAVIGATION BAR
+      .header-inner
+        / BEGIN LOGO
+        %a.navbar-brand{href: url("/admin")}
+          %img.img-responsive{alt: "logo", src: url("/assets/img/logo.png")}/
+        / END LOGO
+        / BEGIN RESPONSIVE MENU TOGGLER
+        %a.navbar-toggle{"data-target" => ".navbar-collapse", "data-toggle" => "collapse", href: "javascript:;"}
+          %img{alt: "", src: url("/assets/img/menu-toggler.png")}/
+        / END RESPONSIVE MENU TOGGLER
+        / BEGIN TOP NAVIGATION MENU
+        %ul.nav.navbar-nav.pull-right
+          / BEGIN USER LOGIN DROPDOWN
+          %li.dropdown.user
+            %a.dropdown-toggle{"data-close-others" => "true", "data-hover" => "dropdown", "data-toggle" => "dropdown", href: "#"}
+              - @auth_user = User[session[:user_id]]
+              %img{alt: "", src: "http://gravatar.com/avatar/#{md5(@auth_user.email)}?s=29"}/
+              %span.username= "#{@auth_user.first_name} #{@auth_user.last_name}"
+              %i.icon-angle-down
+            %ul.dropdown-menu
+              %li
+                %a{href: "#"}
+                  %i.icon-user
+                  My Profile
+              %li
+                %a{href: url("/logout")}
+                  %i.icon-key
+                  Log Out
+          / END USER LOGIN DROPDOWN
+        / END TOP NAVIGATION MENU
+      / END TOP NAVIGATION BAR
+    / END HEADER
+    .clearfix
+    / BEGIN CONTAINER
+    .page-container
+      / BEGIN SIDEBAR
+      .page-sidebar.navbar-collapse.collapse
+        / BEGIN SIDEBAR MENU
+        %ul.page-sidebar-menu
+          %li{style: "margin-bottom: 35px;"}
+            / BEGIN SIDEBAR TOGGLER BUTTON
+            .sidebar-toggler.hidden-phone
+            / BEGIN SIDEBAR TOGGLER BUTTON
+          %li.start
+            %a{href: url("/admin")}
+              %i.icon-home
+              %span.title Dashboard
+              %span.selected
+          %li.active
+            %a{href: "javascript:;"}
+              %i.icon-file-alt
+              %span.title Posts
+              %span.arrow
+            %ul.sub-menu
+              %li.active
+                %a{href: url("/admin/post/all")} All posts
+              %li
+                %a{href: url("/admin/post/new")} Add new
+              %li
+                %a{href: url("/admin/categories")} Categories
+              %li
+                %a{href: url("/admin/tags")} Tags
+          %li
+            %a{href: url("/admin/comments")}
+              %i.icon-comments-alt
+              %span.title Comments
+          %li
+            %a{href: "javascript:;"}
+              %i.icon-user
+              %span.title Users
+              %span.arrow
+            %ul.sub-menu
+              %li
+                %a{href: url("/admin/users")} All users
+              %li
+                %a{href: url("/admin/user/new")} Add new
+        / END SIDEBAR MENU
+      / END SIDEBAR
+      / BEGIN PAGE
+      .page-content
+        / BEGIN PAGE HEADER
+        .row
+          .col-md-12
+            / BEGIN PAGE TITLE & BREADCRUMB
+            %h3.page-title
+              Posts
+              %small
+            %ul.page-breadcrumb.breadcrumb
+              %li
+                %i.icon-home
+                %a{href: url("/")} Home
+                %i.icon-angle-right
+              %li
+                %a{href: "#"} Posts
+            / END PAGE TITLE & BREADCRUMB
+        / END PAGE HEADER
+        / BEGIN PAGE CONTENT
+        .row
+          .col-md-12
+            - if (params[:msg] && params[:msg] == "success")
+              .alert.alert-success
+                %button.close{"aria-hidden" => "true", "data-dismiss" => "alert", type: "button"}
+                The post has been deleted successfully!
+            - elsif (params[:msg] && params[:msg] == "error")
+              .alert.alert-danger
+                %button.close{"aria-hidden" => "true", "data-dismiss" => "alert", type: "button"}
+                The post failed to be deleted!
+
+            / BEGIN POSTS TABLE PORTLET
+            .portlet.box.grey
+              .portlet-title
+                .caption
+                  List of posts
+                .tools
+                  %a.collapse{href: "javascript:;"}
+              .portlet-body
+                .table-toolbar
+                  .btn-group
+                    %a.btn.green{href: url("/admin/post/new")}
+                      Add New
+                      %i.icon-plus
+                %table.custom_table.table.table-striped.table-hover.table-bordered
+                  %thead
+                    %tr
+                      %th Title
+                      %th{style: "width: 200px;"} Author
+                      / %th{style: "width: 250px;"} Categories
+                      %th{style: "width: 130px;"} Comments
+                      %th{style: "width: 130px;"} Date
+                      %th{style: "width: 145px;"} Actions
+                  %tbody
+                    - @posts.each do |r|
+                      %tr
+                        %td= r[:title]
+                        - @user = User.filter(:id => r[:user_id]).limit(1)
+                        %td= "#{@user[:id][:first_name]} #{@user[:id][:last_name]}"
+                        %td= r[:comment_count]
+                        %td.center= dformat(r[:date_created]) 
+                        %td
+                          %a.btn.default.btn-xs.green.edit{href: url("/admin/post/#{r[:id]}/edit")}
+                            %i.icon-edit
+                            Edit
+                          %a.btn.default.btn-xs.red.delete{href: "javascript:;", "data-post" => "action=post&id=#{r[:id]}", "data-content" => "#{r[:title]}", "data-target" => "#delete", "data-toggle" => "modal"}
+                            %i.icon-trash
+                            Delete
+            / END POSTS TABLE PORTLET
+        / END PAGE CONTENT
+        #delete.modal.fade{"data-backdrop" => "static", "data-keyboard" => "false", tabindex: "-1"}
+          .modal-body
+            %p
+              Do you want to delete
+              %span.data_content{style: "font-weight: bold; color: green;"}
+              ?
+          .modal-footer
+            %button.btn.btn-default.cancel{"data-dismiss" => "modal", type: "button"} Cancel
+            %button.btn.red.delete{"data-dismiss" => "modal", type: "button"} Delete
+      / END PAGE
+    / END CONTAINER
+    / BEGIN FOOTER
+    .footer
+      .footer-inner
+        2013 © Sinatra Blog by masters.
+      .footer-tools
+        %span.go-top
+          %i.icon-angle-up
+    / END FOOTER
+    / BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time)
+    / BEGIN CORE PLUGINS
+    /[if lt IE 9]
+      %script{src: url("/assets/plugins/respond.min.js"), type: "text/javascript"}
+      %script{src: url("/assets/plugins/excanvas.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery-1.10.2.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery-migrate-1.2.1.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap/js/bootstrap.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-hover-dropdown/twitter-bootstrap-hover-dropdown.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery.blockui.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/jquery.cookie.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/uniform/jquery.uniform.min.js"), type: "text/javascript"}
+    / END CORE PLUGINS
+    / BEGIN PAGE LEVEL PLUGINS
+    %script{src: url("/assets/plugins/select2/select2.min.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/data-tables/jquery.dataTables.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/data-tables/DT_bootstrap.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-modal/js/bootstrap-modalmanager.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-modal/js/bootstrap-modal.js"), type: "text/javascript"}
+    / END PAGE LEVEL PLUGINS
+    / BEGIN PAGE LEVEL SCRIPTS
+    %script{src: url("/assets/scripts/app.js")}
+    %script{src: url("/assets/scripts/table-editable.js")}
+    :javascript
+      jQuery(document).ready(function() {       
+         App.init();
+         TableEditable.init();
+      });
+  / END BODY

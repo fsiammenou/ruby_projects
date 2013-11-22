@@ -1,0 +1,323 @@
+!!!
+/[if IE 8] <html lang="en" class="ie8">
+/[if IE 9] <html lang="en" class="ie9">
+/ [if !IE]><!
+%html{lang: "en"}
+  / <![endif]
+  / BEGIN HEAD
+  %head
+    %meta{charset: "utf-8"}/
+    %title Sinatra Blog | Blog Item
+    %meta{content: "width=device-width, initial-scale=1.0", name: "viewport"}/
+    %meta{content: "", name: "description"}/
+    %meta{content: "", name: "author"}/
+    / BEGIN GLOBAL MANDATORY STYLES
+    %link{href: url("/site/assets/plugins/font-awesome/css/font-awesome.min.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/site/assets/plugins/bootstrap/css/bootstrap.min.css"), rel: "stylesheet", type: "text/css"}/
+    / END GLOBAL MANDATORY STYLES
+    / BEGIN PAGE LEVEL PLUGIN STYLES
+    %link{href: url("/site/assets/plugins/fancybox/source/jquery.fancybox.css"), rel: "stylesheet"}/
+    %link{href: url("/assets/plugins/bootstrap-datepicker/css/datepicker.css"), rel: "stylesheet", type: "text/css"}/
+    / END PAGE LEVEL PLUGIN STYLES
+    / BEGIN THEME STYLES
+    %link{href: url("/site/assets/css/style-metronic.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/site/assets/css/style.css"), rel: "stylesheet", type: "text/css"}/
+    %link#style_color{href: url("/site/assets/css/themes/blue.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/site/assets/css/style-responsive.css"), rel: "stylesheet", type: "text/css"}/
+    %link{href: url("/site/assets/css/custom.css"), rel: "stylesheet", type: "text/css"}/
+    / END THEME STYLES
+    %link{href: "favicon.ico", rel: "shortcut icon"}/
+  / END HEAD
+  / BEGIN BODY
+  %body
+    / BEGIN HEADER
+    .header.navbar.navbar-default.navbar-static-top
+      .container
+        .navbar-header
+          / BEGIN RESPONSIVE MENU TOGGLER
+          %button.navbar-toggle.btn.navbar-btn{"data-target" => ".navbar-collapse", "data-toggle" => "collapse"}
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+          / END RESPONSIVE MENU TOGGLER
+          / BEGIN LOGO (you can use logo image instead of text)
+          %a.navbar-brand.logo-v1{href: url("/")}
+            %img#logoimg{alt: "", src: url("/site/assets/img/logo_blue.png")}/
+          / END LOGO
+        / BEGIN TOP NAVIGATION MENU
+        .navbar-collapse.collapse
+          %ul.nav.navbar-nav
+            %li
+              %a{href: url("/")} Home
+            %li
+              %a{href: url("/about")} About
+            %li
+              %a{href: url("/contact")} Contact
+            %li
+              %a{href: url("/login"), target: "_blank"} Admin
+            %li.menu-search
+              %span.sep
+              %i.icon-search.search-btn
+              .search-box
+                %form{action: url("/search"), method: "post"}
+                  .input-group.input-large
+                    %input.form-control{type: "text", name: "search", placeholder: "Search"}/
+                    %span.input-group-btn
+                      %button.btn.theme-btn{type: "submit"} Go
+        / BEGIN TOP NAVIGATION MENU
+    / END HEADER
+    / BEGIN PAGE CONTAINER
+    .page-container
+      / BEGIN BREADCRUMBS
+      .row.breadcrumbs.margin-bottom-40
+        .container
+          .col-md-4.col-sm-4
+            %h1 Blog Item
+          .col-md-8.col-sm-8
+            %ul.pull-right.breadcrumb
+              %li
+                %a{href: url("/")} Home
+              %li.active Blog Item
+      / END BREADCRUMBS
+      / BEGIN CONTAINER
+      .container.min-hight
+        / BEGIN BLOG
+        .row
+          / BEGIN LEFT SIDEBAR
+          .col-md-9.blog-item.margin-bottom-40
+            .blog-item-img
+              -if (@post[:type] == 'video')
+                %iframe{allowfullscreen: "", height: "460", src: "#{@post[:filename]}", style: "width:100%; border:0"}
+              - elsif (@post[:type] == 'audio')
+                %iframe{allowfullscreen: "", height: "160", src: "#{@post[:filename]}", style: "width:100%; border:0"}
+              - elsif (@post[:type] == 'standard')
+                %img.img-responsive{alt: "", src: url("/uploads/#{@post[:filename]}")}/
+            %h2
+              %a{href: "post/#{@post[:id]}/view"}= @post[:title]
+            = @post[:content]
+            %ul.blog-info
+              %li
+                %i.icon-user
+                - @user = get_user(@post[:user_id])
+                = "#{@user[:first_name]} #{@user[:last_name]}"
+              %li
+                %i.icon-calendar
+                = dformat(@post[:date_created])
+              %li
+                %i.icon-comments
+                = @post[:comment_count]
+              %li
+                %i.icon-tags
+                Metronic, Keenthemes, UI Design
+
+            - @comments = get_comments(@post[:id])
+            .media
+              - if @comments.empty?
+                %h3 No comments
+              - else
+                %h3 Comments
+
+            - @comments.each do |r|
+              .media
+                %a.pull-left{href: "javascript:;"}
+                  %img.media-object{alt: "", src: "http://gravatar.com/avatar/#{md5(r[:author_email])}?s=60"}/
+                .media-body
+                  %h4.media-heading
+                    = r[:author]
+                    %span
+                      = dformat(r[:date]) 
+                      /%a{href: "#"} Reply
+                  %p= r[:content]
+                %hr/
+              / end media
+            .post-comment
+              %h3 Leave a Comment
+              %form{role: "form", action: "/post/#{@post[:id]}/comment", method: "post"}
+                .form-group
+                  %label Name
+                  %input.form-control{type: "text", name: "name"}/
+                .form-group
+                  %label
+                    Email
+                  %input.form-control{type: "email", name: "email"}/
+                .form-group
+                  %label Message
+                  %textarea.form-control{rows: "8", name: "message"}
+                %p
+                  %button.btn.btn-default.theme-btn{type: "submit"} Post a Comment
+          / END LEFT SIDEBAR
+          / BEGIN RIGHT SIDEBAR
+          .col-md-3.col-sm-3.blog-sidebar
+            / BEGIN RECENT POSTS
+            %h2 Recent Posts
+            .recent-news.margin-bottom-10
+              - @recent_posts = recent_posts(3)
+              - @recent_posts.each do |r|
+                .row.margin-bottom-10
+                  .col-md-3
+                    %img.img-responsive{alt: "", src: "http://placehold.it/60x60"}/
+                  .col-md-9.recent-news-inner
+                    %h3
+                      %a{href: url("/post/#{r[:id]}/view")}= r[:title]
+                    %p= excerpt(r[:content], 60)
+            / END RECENT POSTS
+            / BEGIN ARCHIVES
+            .archives.margin-bottom-20
+              %h2 Archives
+              .clearfix
+                .date-picker{"data-date-format" => "mm/dd/yyyy"}
+            / END ARCHIVES
+            / BEGIN BLOG TAGS
+            .blog-tags.margin-bottom-20
+              %h2 Tags
+              %ul
+                %li
+                  %a{href: "#"}
+                    %i.icon-tags>
+                    OS
+                %li
+                  %a{href: "#"}
+                    %i.icon-tags>
+                    Metronic
+                %li
+                  %a{href: "#"}
+                    %i.icon-tags>
+                    Dell
+                %li
+                  %a{href: "#"}
+                    %i.icon-tags>
+                    Conquer
+                %li
+                  %a{href: "#"}
+                    %i.icon-tags>
+                    MS
+                %li
+                  %a{href: "#"}
+                    %i.icon-tags>
+                    Google
+                %li
+                  %a{href: "#"}
+                    %i.icon-tags>
+                    Keenthemes
+                %li
+                  %a{href: "#"}
+                    %i.icon-tags>
+                    Twitter
+            / END BLOG TAGS
+          / END RIGHT SIDEBAR
+        / END BEGIN BLOG
+      / END CONTAINER
+    / END BEGIN PAGE CONTAINER
+    / BEGIN FOOTER
+    .footer
+      .container
+        .row
+          .col-md-4.col-sm-4.space-mobile
+            / BEGIN ABOUT
+            %h2 About
+            %p.margin-bottom-30 Vivamus imperdiet felis consectetur onec eget orci adipiscing nunc. Pellentesque fermentum, ante ac interdum ullamcorper.
+            .clearfix
+            / END ABOUT
+          .col-md-4.col-sm-4.space-mobile
+            / BEGIN CONTACTS
+            %h2 Contact Us
+            %address.margin-bottom-40
+              Loop, Inc.
+              %br/
+              795 Park Ave, Suite 120
+              %br/
+              San Francisco, CA 94107
+              %br/
+              P: (234) 145-1810
+              %br/
+              Email:
+              %a{href: "mailto:info@keenthemes.com"} info@keenthemes.com
+            / END CONTACTS
+          .col-md-4.col-sm-4
+            / BEGIN TWITTER BLOCK
+            %h2 Latest Tweets
+            %dl.dl-horizontal.f-twitter
+              %dt
+                %i.icon-twitter
+              %dd
+                %a{href: "#"} @keenthemes
+                Imperdiet condimentum diam dolor lorem sit consectetur adipiscing
+                %span 3 min ago
+            %dl.dl-horizontal.f-twitter
+              %dt
+                %i.icon-twitter
+              %dd
+                %a{href: "#"} @keenthemes
+                Sequat ipsum dolor onec eget orci fermentum condimentum lorem sit consectetur adipiscing
+                %span 8 min ago
+            / END TWITTER BLOCK
+    / END FOOTER
+    / BEGIN COPYRIGHT
+    .copyright
+      .container
+        .row
+          .col-md-8
+            %p
+              %span.margin-right-10 2013 © Sinatra Blog by masters. ALL Rights Reserved.
+              %a{href: "#"} Privacy Policy
+              |
+              %a{href: "#"} Terms of Service
+          .col-md-4
+            %ul.social-footer
+              %li
+                %a{href: "#"}
+                  %i.icon-facebook
+              %li
+                %a{href: "#"}
+                  %i.icon-google-plus
+              %li
+                %a{href: "#"}
+                  %i.icon-dribbble
+              %li
+                %a{href: "#"}
+                  %i.icon-linkedin
+              %li
+                %a{href: "#"}
+                  %i.icon-twitter
+              %li
+                %a{href: "#"}
+                  %i.icon-skype
+              %li
+                %a{href: "#"}
+                  %i.icon-github
+              %li
+                %a{href: "#"}
+                  %i.icon-youtube
+              %li
+                %a{href: "#"}
+                  %i.icon-dropbox
+    / END COPYRIGHT
+    / Load javascripts at bottom, this will reduce page load time
+    / BEGIN CORE PLUGINS(REQUIRED FOR ALL PAGES)
+    /[if lt IE 9]
+      %script{src: url("/site/assets/plugins/respond.min.js"), type: "text/javascript"}
+    %script{src: url("/site/assets/plugins/jquery-1.10.2.min.js"), type: "text/javascript"}
+    %script{src: url("/site/assets/plugins/jquery-migrate-1.2.1.min.js"), type: "text/javascript"}
+    %script{src: url("/site/assets/plugins/bootstrap/js/bootstrap.min.js"), type: "text/javascript"}
+    %script{src: url("/site/assets/plugins/hover-dropdown.js"), type: "text/javascript"}
+    %script{src: url("/site/assets/plugins/back-to-top.js"), type: "text/javascript"}
+    %script{src: url("/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"), type: "text/javascript"}
+    / END CORE PLUGINS
+    / BEGIN PAGE LEVEL JAVASCRIPTS(REQUIRED ONLY FOR CURRENT PAGE)
+    %script{src: url("/site/assets/plugins/fancybox/source/jquery.fancybox.pack.js"), type: "text/javascript"}
+    %script{src: url("/site/assets/scripts/app.js")}
+    :javascript
+      jQuery(document).ready(function() {
+          App.init();
+          $('.date-picker').datepicker()
+            .on('changeDate', function(ev){
+              var date = new Date(ev.date)
+              var day = date.getDate();
+              var month = date.getMonth() + 1;
+              var year = date.getFullYear();
+
+              window.location = "/archives/"+ year +"/"+ month +"/"+ day; 
+            });
+      });
+    / END PAGE LEVEL JAVASCRIPTS
+  / END BODY
