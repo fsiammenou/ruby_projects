@@ -1,0 +1,52 @@
+ INFO MyBloglogger: App Started
+ INFO MyBloglogger: Login failure. Wrong Credentials: zdfhfgh/zdfhfgh given 
+ INFO MyBloglogger: Login failure.Empty Credentials given
+ INFO MyBloglogger: User username Authenticated
+ INFO MyBloglogger: Login failure. Wrong Credentials: ddd/ddd given 
+ INFO MyBloglogger: Login failure.Empty Credentials given
+ INFO MyBloglogger: App Started
+ INFO MyBloglogger: Login failure. Wrong Credentials: xgfbxfg/xgfbxfg given 
+ INFO MyBloglogger: Login failure.Empty Credentials given
+ INFO MyBloglogger: 14Dec2013184514 :: User username Authenticated
+ INFO MyBloglogger: App Started
+ INFO MyBloglogger: 14Dec2013 18.47.40 :: Login failure. Wrong Credentials: ssssssss/ssssssss given
+ INFO MyBloglogger: 14Dec2013 18.47.40 :: Login failure.Empty Credentials given
+ INFO MyBloglogger: 14/12/2013 18:51:46App Started
+ INFO MyBloglogger: 14/12/2013 18:52:33 :: Login failure. Wrong Credentials: SDFSD/SDFSD given
+ INFO MyBloglogger: 14/12/2013 18:52:33 :: Login failure.Empty Credentials given
+ INFO MyBloglogger: 14/12/2013 18:54:32App Started
+ INFO MyBloglogger: 14/12/2013 18:55:05 :: Login failure. Wrong Credentials: sfdgsrg/sfdgsrg given
+ INFO MyBloglogger: 14/12/2013 18:57:29App Started
+ INFO MyBloglogger: 14/12/2013 19:01:45App Started
+ WARN MyBloglogger: 14/12/2013 19:02:13 :: Login failure. Wrong Credentials: dsaefa/dsaefa given
+ INFO MyBloglogger: 14/12/2013 19:05:28 :: App Started
+ INFO MyBloglogger: 14/12/2013 19:05:45 :: Login failure. Wrong Credentials: zdfbghzs/zdfbghzs given
+ INFO MyBloglogger: 14/12/2013 19:05:56 :: Login failure. Wrong Credentials: username/username given
+ INFO MyBloglogger: 14/12/2013 19:06:06 :: User username Authenticated
+ INFO MyBloglogger: 14/12/2013 19:10:30 :: App Started
+ INFO MyBloglogger: 14/12/2013 19:10:47 :: Login failure. Wrong Credentials: aaa/aaaaaaaaa given
+ INFO MyBloglogger: 14/12/2013 19:11:00 :: User 'username' is Authenticated
+ INFO MyBloglogger: 14/12/2013 19:12:37 :: App Started
+ INFO MyBloglogger: 14/12/2013 19:12:55 :: Login failure. Wrong Credentials: 13/sgfdfgsd given
+ INFO MyBloglogger: 14/12/2013 19:13:02 :: User 'username' is Authenticated
+ INFO MyBloglogger: 14/12/2013 19:16:16 :: App Started
+ INFO MyBloglogger: 14/12/2013 19:16:32 :: Login failure. Wrong Credentials: aaaa/aaaa given
+ INFO MyBloglogger: 14/12/2013 19:17:22 :: Login failure. Wrong Credentials: wwwwwwww/aa given
+ INFO MyBloglogger: 14/12/2013 20:11:59 :: App Started
+ INFO MyBloglogger: 14/12/2013 20:31:02 :: App Started
+ INFO MyBloglogger: 14/12/2013 20:37:44 :: App Started
+ INFO MyBloglogger: 14/12/2013 20:38:28 :: App Started
+ INFO MyBloglogger: 14/12/2013 20:48:58 :: App Started
+ INFO MyBloglogger: 14/12/2013 20:54:50 :: App Started
+ INFO MyBloglogger: 14/12/2013 21:14:09 :: App Started
+ INFO MyBloglogger: 14/12/2013 21:32:34 :: App Started
+ INFO MyBloglogger: 14/12/2013 21:37:25 :: App Started
+ INFO MyBloglogger: 14/12/2013 21:37:44 :: Login failure. Wrong Credentials: assav/dsfg given
+ INFO MyBloglogger: 14/12/2013 21:37:56 :: User 'username' is Authenticated
+ INFO MyBloglogger: 14/12/2013 21:50:07 :: App Started
+ INFO MyBloglogger: 14/12/2013 21:51:01 :: App Started
+ INFO MyBloglogger: 14/12/2013 21:59:45 :: App Started
+ INFO MyBloglogger: 14/12/2013 22:00:00 :: User 'username' is Authenticated
+ INFO MyBloglogger: 14/12/2013 22:02:07 :: App Started
+ INFO MyBloglogger: 14/12/2013 23:40:05 :: App Started
+ INFO MyBloglogger: 14/12/2013 23:50:35 :: App Started

@@ -189,6 +189,10 @@
                               %td= "#{excerpt(r[:content], 30)}..."
                               %td.center= dformat(r[:date]) 
                               %td
+                                %form{role: "form",id:"approvef#{r[:id]}", action: "/admin/comment/save?id=#{r[:id]}&action=unapprove", method: "post"}
+                                  %a.btn.default.btn-xs.yellow.edit{href:"#", onclick:"document.forms['unapprovef#{r[:id]'].submit();return false;"}
+                                    %i.icon-edit
+                                    Unapprove
                                 %a.btn.default.btn-xs.green.edit{href: url("/admin/comment/#{r[:id]}/edit")}
                                   %i.icon-edit
                                   Edit
@@ -214,6 +218,10 @@
                               %td= "#{excerpt(r[:content], 30)}..."
                               %td.center= dformat(r[:date]) 
                               %td
+                                %form{role: "form",id:"approvef", action: "/admin/comment/save?id=#{r[:id]}&action=approve", method: "post"}
+                                  %a.btn.default.btn-xs.yellow.edit{href:"#", onclick:"document.forms['approvef'].submit();return false;"}
+                                    %i.icon-edit
+                                    Approve
                                 %a.btn.default.btn-xs.green.edit{href: url("/admin/comment/#{r[:id]}/edit")}
                                   %i.icon-edit
                                   Edit

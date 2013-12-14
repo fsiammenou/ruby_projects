@@ -115,14 +115,14 @@ class App < Sinatra::Application
   get '/' do
     @posts = Post.filter(:status => 1).limit(5).order(:date_created).reverse
 
-    haml :"public/postsList", :layout => true
+    haml :postsList, :layout => true
   end
 
   #Search results page
   post '/search' do
     @posts = Post.filter(Sequel.like(Sequel.function(:lower, :title), "%#{params[:search]}%"), :status => 1).all
 
-    haml :"public/search", :layout => true
+    haml :search, :layout => true
   end
 
   #Archives page
@@ -130,7 +130,7 @@ class App < Sinatra::Application
     @date = "#{params[:year]}-#{params[:month]}-#{params[:day]}"
     @posts = Post.where(Sequel.like(:date_created, "#{@date}%"), :status => 1).all
 
-    haml :"public/search", :layout => true
+    haml :search, :layout => true
   end
 
   #Pagination
@@ -144,14 +144,14 @@ class App < Sinatra::Application
       redirect "/"
     end
     
-    haml :"public/postsList", :layout => true
+    haml :postsList, :layout => true
   end
 
   #Single post
   get '/post/:id/view' do
     @post = Post.filter(:id => params[:id]).limit(1).all[0]
 
-    haml :"public/postView", :layout => true
+    haml :postView, :layout => true
   end
 
   #Post a comment

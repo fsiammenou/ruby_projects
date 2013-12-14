@@ -1,0 +1,72 @@
+.page-content
+  / BEGIN PAGE HEADER
+  .row
+    .col-md-12
+      / BEGIN PAGE TITLE & BREADCRUMB
+      %h3.page-title
+        Edit comment
+        %small
+      %ul.page-breadcrumb.breadcrumb
+        %li
+          %i.icon-home
+          %a{href: url("/admin")} Home
+          %i.icon-angle-right
+        %li Edit comment
+      / END PAGE TITLE & BREADCRUMB
+  / END PAGE HEADER
+  / BEGIN PAGE CONTENT
+  .row
+    .col-md-12
+      - if (params[:msg] && params[:msg] == "success")
+        .alert.alert-success
+          %button.close{"aria-hidden" => "true", "data-dismiss" => "alert", type: "button"}
+          Comment has been saved!
+      - elsif (params[:msg] && params[:msg] == "error")
+        .alert.alert-danger
+          %button.close{"aria-hidden" => "true", "data-dismiss" => "alert", type: "button"}
+          Comment has not been saved!
+      .portlet.box.grey
+        .portlet-title
+          .caption Edit comment
+          .tools
+            %a.collapse{href: "javascript:;"}
+        .portlet-body.form
+          / BEGIN FORM
+          %form.form-horizontal.form-bordered{action: "/admin/comment/save", method: "post"}
+            %input.form-control{type: "hidden", name: "id", value: "#{@comment[:id]}"}
+            .form-body
+              .row.form-group
+                %label.control-label.col-md-3 Post Title
+                .col-md-9
+                  %input.form-control{type: "text", readonly: "readonly" , value: "#{Post.filter(:id => @comment[:post_id]).limit(1).all[0][:title]}"}
+              .row.form-group
+                %label.control-label.col-md-3 Name
+                .col-md-9
+                  %input.form-control{type: "text", name: "author", value: "#{@comment[:author]}"}
+              .row.form-group
+                %label.control-label.col-md-3 Email
+                .col-md-9
+                  %input.form-control{type: "email", name: "author_email", value: "#{@comment[:author_email]}"}
+              .row.form-group
+                %label.control-label.col-md-3 IP
+                .col-md-9
+                  %input.form-control{type: "text", readonly: "readonly", value: "#{@comment[:author_ip]}"}
+              .row.form-group
+                %label.control-label.col-md-3 Date
+                .col-md-9
+                  %input.form-control{type: "text", readonly: "readonly", value: "#{dformat(@comment[:date])}"}
+              .row.form-group
+                %label.control-label.col-md-3 Comment
+                .col-md-9
+                  %textarea.form-control{rows: "5", name: "comment"}= @comment[:content]
+              .row.form-group.last
+                %label.control-label.col-md-3{style: "padding-top: 10px;"} Approve/Unapprove
+                .col-md-9
+                  - if @comment[:status] == 1
+                    %input.form-control{checked: "checked", type: "checkbox", name: "status", value: "1"}
+                  - else
+                    %input.form-control{type: "checkbox", name: "status", value: "1"}
+            .form-actions.right
+              %button.btn.green{type: "submit"} Save
+          / END FORM
+  / END PAGE CONTENT

@@ -1,0 +1,13 @@
+
+Sequel.migration do
+ 
+ up do
+   from(:users).insert(:username=>'admin',:password=>'admin')
+ end
+
+ down do 
+  from(:users).delete_where(:username=>'admin')
+ end
+
+end 
+

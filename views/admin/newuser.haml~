@@ -1,0 +1,98 @@
+.page-content
+  / BEGIN PAGE HEADER
+  .row
+    .col-md-12
+      / BEGIN PAGE TITLE & BREADCRUMB
+      %h3.page-title
+        Edit user
+        %small
+      %ul.page-breadcrumb.breadcrumb
+        %li
+          %i.icon-home
+          %a{href: "/admin"} Home
+          %i.icon-angle-right
+        %li Add new user
+      / END PAGE TITLE & BREADCRUMB
+  / END PAGE HEADER
+  / BEGIN PAGE CONTENT
+  .row
+    .col-md-12
+      - if (params[:msg] && params[:msg] == "success")
+        .alert.alert-success
+          %button.close{"aria-hidden" => "true", "data-dismiss" => "alert", type: "button"}
+          User has been saved!
+      - elsif (params[:msg] && params[:msg] == "error")
+        .alert.alert-danger
+          %button.close{"aria-hidden" => "true", "data-dismiss" => "alert", type: "button"}
+          User has not been saved!
+
+      .portlet.box.grey
+        .portlet-title
+          .caption Add new user
+          .tools
+            %a.collapse{href: "javascript:;"}
+        .portlet-body.form
+          / BEGIN FORM
+          %form.form-horizontal.form-bordered{action: "/admin/user/save", method: "post"}
+            - if @id
+              %input.form-control{type: "hidden", name: "action", value: "edit"}/
+              %input.form-control{type: "hidden", name: "id", value: "#{@id}"}/
+            - else
+              %input.form-control{type: "hidden", name: "action", value: "save"}/
+            .form-body
+              .row.form-group
+                %label.control-label.col-md-3 Username
+                .col-md-9
+                  - if @user
+                    %input.form-control{type: "text", name: "username", value: "#{@user[:username]}"}
+                  - else
+                    %input.form-control{type: "text", name: "username"}
+              .row.form-group
+                %label.control-label.col-md-3 First Name
+                .col-md-9
+                  - if @user
+                    %input.form-control{type: "text", name: "first_name", value: "#{@user[:first_name]}"}
+                  - else
+                    %input.form-control{type: "text", name: "first_name"}
+              .row.form-group
+                %label.control-label.col-md-3 Last Name
+                .col-md-9
+                  - if @user
+                    %input.form-control{type: "text", name: "last_name", value: "#{@user[:last_name]}"}
+                  - else
+                    %input.form-control{type: "text", name: "last_name"}
+              .row.form-group
+                %label.control-label.col-md-3 E-mail
+                .col-md-9
+                  - if @user
+                    %input.form-control{type: "email", name: "email", value: "#{@user[:email]}"}
+                  - else
+                    %input.form-control{type: "email", name: "email"}
+              .row.form-group
+                %label.control-label.col-md-3 Password
+                .col-md-9
+                  %input.form-control{type: "password", name: "password"}
+              .row.form-group
+                %label.control-label.col-md-3 Description
+                .col-md-9
+                  - if @user
+                    %textarea.form-control{rows: "5", name: "description"}= @user[:description]
+                  - else
+                    %textarea.form-control{rows: "5", name: "description"}
+              .row.form-group
+                %label.control-label.col-md-3{style: "padding-top: 10px;"} Active/Inactive
+                .col-md-9
+                  - if @user and (@user[:status] != nil)
+                    %input.form-control{checked: "checked", type: "checkbox", name: "status", value: "1"}
+                  - else
+                    %input.form-control{type: "checkbox", name: "status", value: "1"}
+              .row.form-group.last
+                %label.control-label.col-md-3 User Level
+                .col-md-9
+                  %select.form-control{name: "level"}
+                    %option{value: "1"} Admin
+                    %option{value: "2"} Author
+            .form-actions.right
+              %button.btn.green{type: "submit"} Save
+          / END FORM
+  / END PAGE CONTENT

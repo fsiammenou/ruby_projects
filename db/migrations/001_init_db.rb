@@ -47,7 +47,8 @@ Sequel.migration do
       primary_key :id, :type => :Integer
       foreign_key :tag_id, :tags, :type => :Integer
       foreign_key :post_id, :posts, :type => :Integer
-
+   end
+   end
 
    down do 
       drop_table(:users)

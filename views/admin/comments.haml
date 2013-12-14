@@ -1,0 +1,108 @@
+.page-content
+  / BEGIN PAGE HEADER
+  .row
+    .col-md-12
+      / BEGIN PAGE TITLE & BREADCRUMB
+      %h3.page-title
+        Comments
+        %small
+      %ul.page-breadcrumb.breadcrumb
+        %li
+          %i.icon-home
+          %a{href: "index.html"} Home
+          %i.icon-angle-right
+        %li Comments
+      / END PAGE TITLE & BREADCRUMB
+  / END PAGE HEADER
+  / BEGIN PAGE CONTENT
+  .row
+    .col-md-12
+      - if (params[:msg] && params[:msg] == "success")
+        .alert.alert-success
+          %button.close{"aria-hidden" => "true", "data-dismiss" => "alert", type: "button"}
+          The comment has been deleted successfully!
+      - elsif (params[:msg] && params[:msg] == "error")
+        .alert.alert-danger
+          %button.close{"aria-hidden" => "true", "data-dismiss" => "alert", type: "button"}
+          The comment failed to be deleted!
+      / BEGIN COMMENTS PORTLET
+      .portlet.box.grey.tabbable
+        .portlet-title
+          .caption List of comments
+        .portlet-body
+          .portlet-tabs
+            %ul.nav.nav-tabs
+              %li
+                %a{"data-toggle" => "tab", href: "#unpproved_tab"} Unpproved
+              %li.active
+                %a{"data-toggle" => "tab", href: "#approved_tab"} Approved
+            .tab-content
+              #approved_tab.tab-pane.active
+                %table.custom_table.table.table-striped.table-hover.table-bordered
+                  %thead
+                    %tr
+                      %th{style: "width: 130px;"} Author
+                      %th{style: "width: 150px;"} Email
+                      %th{style: "width: 250px;"} Title of post
+                      %th Comment
+                      %th{style: "width: 120px;"} Date
+                      %th{style: "width: 145px;"} Actions
+                  %tbody
+                    - @comments_approved.each do |r|
+                      %tr
+                        %td= r[:author]
+                        %td= r[:author_email]
+                        %td= Post.filter(:id => r[:post_id]).limit(1).all[0][:title]
+                        %td= "#{excerpt(r[:content], 30)}..."
+                        %td.center= dformat(r[:date]) 
+                        %td
+                          %form{role: "form",id:"unapprovef#{r[:id]}", action: "/admin/comment/save?id=#{r[:id]}&action=unapprove", method: "post"}
+                            %a.btn.default.btn-xs.yellow.edit{href:"#", onclick:"document.forms['unapprovef#{r[:id]}'].submit();return false;"}
+                              %i.icon-edit
+                              Unapprove
+                          %a.btn.default.btn-xs.green.edit{href: url("/admin/comment/#{r[:id]}/edit")}
+                            %i.icon-edit
+                            Edit
+                          %a.btn.default.btn-xs.red.delete{href: "javascript:;", "data-post" => "action=comment&id=#{r[:id]}", "data-content" => "#{r[:author]}", "data-target" => "#delete", "data-toggle" => "modal"}
+                            %i.icon-trash
+                            Delete
+              #unpproved_tab.tab-pane
+                %table.custom_table.table.table-striped.table-hover.table-bordered
+                  %thead
+                    %tr
+                      %th{style: "width: 130px;"} Author
+                      %th{style: "width: 150px;"} Email
+                      %th{style: "width: 250px;"} Title of post
+                      %th Comment
+                      %th{style: "width: 120px;"} Date
+                      %th{style: "width: 145px;"} Actions
+                  %tbody
+                    - @comments_unapproved.each do |r|
+                      %tr
+                        %td= r[:author]
+                        %td= r[:author_email]
+                        %td= Post.filter(:id => r[:post_id]).limit(1).all[0][:title]
+                        %td= "#{excerpt(r[:content], 30)}..."
+                        %td.center= dformat(r[:date]) 
+                        %td
+                          %form{role: "form",id:"approvef#{r[:id]}", action: "/admin/comment/save?id=#{r[:id]}&action=approve", method: "post"}
+                            %a.btn.default.btn-xs.yellow.edit{href:"#", onclick:"document.forms['approvef#{r[:id]}'].submit();return false;"}
+                              %i.icon-edit
+                              Approve
+                          %a.btn.default.btn-xs.green.edit{href: url("/admin/comment/#{r[:id]}/edit")}
+                            %i.icon-edit
+                            Edit
+                          %a.btn.default.btn-xs.red.delete{href: "javascript:;", "data-post" => "action=comment&id=#{r[:id]}", "data-content" => "#{r[:title]}", "data-target" => "#delete", "data-toggle" => "modal"}
+                            %i.icon-trash
+                            Delete
+      / END COMMENTS PORTLET
+  / END PAGE CONTENT
+  #delete.modal.fade{"data-backdrop" => "static", "data-keyboard" => "false", tabindex: "-1"}
+    .modal-body
+      %p
+        Do you want to delete the comment by 
+        %span.data_content{style: "font-weight: bold; color: green;"}
+        ?
+    .modal-footer
+      %button.btn.btn-default.cancel{"data-dismiss" => "modal", type: "button"} Cancel
+      %button.btn.red.delete{"data-dismiss" => "modal", type: "button"} Delete    

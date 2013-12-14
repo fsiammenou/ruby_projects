@@ -109,7 +109,10 @@
               %li
                 %i.icon-tags
                 Metronic, Keenthemes, UI Design
-
+              %li
+                - if (@loggedinuser != nill)
+                  %form{role: "form", action: "/admin/post/#{@post[:id]}/edit", method: "get"}
+                    %button.btn.btn-default.theme-btn{type: "submit"} Edit Post
             - @comments = get_comments(@post[:id])
             .media
               - if @comments.empty?
@@ -130,6 +133,7 @@
                   %p= r[:content]
                 %hr/
               / end media
+              
             .post-comment
               %h3 Leave a Comment
               %form{role: "form", action: "/post/#{@post[:id]}/comment", method: "post"}

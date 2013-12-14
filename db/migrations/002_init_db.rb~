@@ -1,15 +1,11 @@
 
 Sequel.migration do
  
-  up do
-   create_table(:dummy) do
-	primary_key :id
-   end
+ up do
  end
 
  down do 
-   drop_table(:dummy)
+  
  end
 
 end 
-

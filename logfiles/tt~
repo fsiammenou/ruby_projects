@@ -1,0 +1,113 @@
+/ BEGIN PAGE CONTAINER
+    .page-container
+      .row.margin-bottom-40
+      / BEGIN CONTAINER
+      .container.min-hight
+        / BEGIN BLOG
+        .row
+          / BEGIN LEFT SIDEBAR
+          .col-md-9.col-sm-9.blog-posts.margin-bottom-40
+            - if @posts.empty?
+              %h3 Nothing was found!
+            - @posts.each do |r|
+              .row
+                - if r[:type] != nil
+                  .col-md-4.col-sm-4
+                    -if (r[:type] == 'video') or (r[:type] == 'audio')
+                      %iframe{allowfullscreen: "", height: "205", src: "#{r[:filename]}", style: "width:100%; border:0"}
+                    - elsif (r[:type] == 'standard')
+                      %img.img-responsive{alt: "", src: url("/uploads/#{r[:filename]}")}/
+
+                  - if r[:type] != nil
+                    .col-md-8.col-sm-8
+                  - else
+                    .col-md-12.col-sm-12
+
+                  %h2
+                    %a{href: url("/post/#{r[:id]}/view")}= r[:title]
+                  %ul.blog-info
+                    - @user = get_user(r[:user_id])
+                    %li
+                      %i.icon-user
+                      = "#{@user[:first_name]} #{@user[:last_name]}"
+                    %li
+                      %i.icon-calendar
+                      = dformat(r[:date_created]) 
+                    %li
+                      %i.icon-comments
+                      = r[:comment_count]
+                  %p= excerpt(r[:content])
+                  %a.more{href: url("/post/#{r[:id]}/view")}
+                    Read more
+                    %i.icon-angle-right
+              %hr.blog-post-sep/
+            .text-center
+              %ul.pagination.pagination-centered
+                %li
+                  %a{href: url("/")} 1
+                - (2..(get_num_of_pages)).each do |i|
+                  %li
+                    %a{href: url("/page/#{i}")}= i
+          / END LEFT SIDEBAR
+          / BEGIN RIGHT SIDEBAR
+          .col-md-3.col-sm-3.blog-sidebar
+            / BEGIN RECENT POSTS
+            %h2 Recent Posts
+            .recent-news.margin-bottom-10
+              - @recent_posts = recent_posts(3)
+              - @recent_posts.each do |r|
+                .row.margin-bottom-10
+                  .col-md-3
+                    %img.img-responsive{alt: "", src: "http://placehold.it/60x60"}/
+                  .col-md-9.recent-news-inner
+                    %h3
+                      %a{href: url("/post/#{r[:id]}/view")}= r[:title]
+                    %p= excerpt(r[:content], 60)
+            / END RECENT POSTS
+            / BEGIN ARCHIVES
+            .archives.margin-bottom-20
+              %h2 Archives
+              .clearfix
+                .date-picker{"data-date-format" => "mm/dd/yyyy"}
+            / END ARCHIVES
+            / BEGIN BLOG TAGS
+            .blog-tags.margin-bottom-20
+              %h2 Tags
+              %ul
+                %li
+                  %a{href: "#"}
+                    %i.icon-tags>
+                    OS
+                %li
+                  %a{href: "#"}
+                    %i.icon-tags>
+                    Metronic
+                %li
+                  %a{href: "#"}
+                    %i.icon-tags>
+                    Dell
+                %li
+                  %a{href: "#"}
+                    %i.icon-tags>
+                    Conquer
+                %li
+                  %a{href: "#"}
+                    %i.icon-tags>
+                    MS
+                %li
+                  %a{href: "#"}
+                    %i.icon-tags>
+                    Google
+                %li
+                  %a{href: "#"}
+                    %i.icon-tags>
+                    Keenthemes
+                %li
+                  %a{href: "#"}
+                    %i.icon-tags>
+                    Twitter
+            / END BLOG TAGS
+          / END RIGHT SIDEBAR
+        / END BEGIN BLOG
+      / END CONTAINER
+    / END BEGIN PAGE CONTAINER

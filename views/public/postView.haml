@@ -1,0 +1,144 @@
+.page-container
+  / BEGIN BREADCRUMBS
+  .row.breadcrumbs.margin-bottom-40
+    .container
+      .col-md-4.col-sm-4
+        %h1 Blog Item
+      .col-md-8.col-sm-8
+        %ul.pull-right.breadcrumb
+          %li
+            %a{href: url("/")} Home
+          %li.active Blog Item
+  / END BREADCRUMBS
+  / BEGIN CONTAINER
+  .container.min-hight
+    / BEGIN BLOG
+    .row
+      / BEGIN LEFT SIDEBAR
+      .col-md-9.blog-item.margin-bottom-40
+        .blog-item-img
+          -if (@post[:type] == 'video')
+            %iframe{allowfullscreen: "", height: "460", src: "#{@post[:filename]}", style: "width:100%; border:0"}
+          - elsif (@post[:type] == 'audio')
+            %iframe{allowfullscreen: "", height: "160", src: "#{@post[:filename]}", style: "width:100%; border:0"}
+          - elsif (@post[:type] == 'standard')
+            %img.img-responsive{alt: "", src: url("/uploads/#{@post[:filename]}")}/
+        %h2
+          %a{href: "post/#{@post[:id]}/view"}= @post[:title]
+        = @post[:content]
+        %ul.blog-info
+          %li
+            %i.icon-user
+            - @user = get_user(@post[:user_id])
+            = "#{@user[:first_name]} #{@user[:last_name]}"
+          %li
+            %i.icon-calendar
+            = dformat(@post[:date_created])
+          %li
+            %i.icon-comments
+            = @post[:comment_count]
+          %li
+            %i.icon-tags
+            Metronic, Keenthemes, UI Design
+          - if (@loggedinuser != nil) 
+            %li
+              %form{role: "form", action: "/admin/post/#{@post[:id]}/edit", method: "get"}
+                %button.btn.btn-default.theme-btn{type: "submit"} Edit Comment
+
+        - @comments = get_comments(@post[:id])
+        .media
+          - if @comments.empty?
+            %h3 No comments
+          - else
+            %h3 Comments
+
+        - @comments.each do |r|
+          .media
+            %a.pull-left{href: "javascript:;"}
+              %img.media-object{alt: "", src: "http://gravatar.com/avatar/#{md5(r[:author_email])}?s=60"}/
+            .media-body
+              %h4.media-heading
+                = r[:author]
+                %span
+                  = dformat(r[:date]) 
+                  /%a{href: "#"} Reply
+              %p= r[:content]
+            %hr/
+          / end media
+        .post-comment
+          %h3 Leave a Comment
+          %form{role: "form", action: "/post/#{@post[:id]}/comment", method: "post"}
+            .form-group
+              %label Name
+              %input.form-control{type: "text", name: "name"}/
+            .form-group
+              %label
+                Email
+              %input.form-control{type: "email", name: "email"}/
+            .form-group
+              %label Message
+              %textarea.form-control{rows: "8", name: "message"}
+            %p
+              %button.btn.btn-default.theme-btn{type: "submit"} Post a Comment
+      / END LEFT SIDEBAR
+      / BEGIN RIGHT SIDEBAR
+      .col-md-3.col-sm-3.blog-sidebar
+        / BEGIN RECENT POSTS
+        %h2 Recent Posts
+        .recent-news.margin-bottom-10
+          - @recent_posts = recent_posts(3)
+          - @recent_posts.each do |r|
+            .row.margin-bottom-10
+              .col-md-3
+                %img.img-responsive{alt: "", src: "http://placehold.it/60x60"}/
+              .col-md-9.recent-news-inner
+                %h3
+                  %a{href: url("/post/#{r[:id]}/view")}= r[:title]
+                %p= excerpt(r[:content], 60)
+        / END RECENT POSTS
+        / BEGIN ARCHIVES
+        .archives.margin-bottom-20
+          %h2 Archives
+          .clearfix
+            .date-picker{"data-date-format" => "mm/dd/yyyy"}
+        / END ARCHIVES
+        / BEGIN BLOG TAGS
+        .blog-tags.margin-bottom-20
+          %h2 Tags
+          %ul
+            %li
+              %a{href: "#"}
+                %i.icon-tags>
+                OS
+            %li
+              %a{href: "#"}
+                %i.icon-tags>
+                Metronic
+            %li
+              %a{href: "#"}
+                %i.icon-tags>
+                Dell
+            %li
+              %a{href: "#"}
+                %i.icon-tags>
+                Conquer
+            %li
+              %a{href: "#"}
+                %i.icon-tags>
+                MS
+            %li
+              %a{href: "#"}
+                %i.icon-tags>
+                Google
+            %li
+              %a{href: "#"}
+                %i.icon-tags>
+                Keenthemes
+            %li
+              %a{href: "#"}
+                %i.icon-tags>
+                Twitter
+        / END BLOG TAGS
+      / END RIGHT SIDEBAR
+    / END BEGIN BLOG
+  / END CONTAINER

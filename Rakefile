@@ -1,19 +1,13 @@
 task :default => [:start]
 
+desc 'Starts the application at port 8888'
 task :start do
 	exec "rackup -p 8888 config.ru"
 end
 
-task :db => ["db:init","db:migrate"] do
+desc 'Creates the database schema with default user: username/password inserted'
+task :db do 
+	touch 'db/data.db' unless File.exist?('db/data.db')
+	exec "sequel -m ./db/migrations -M 1 -E sqlite://./db/data.db"
 end
 
-namespace :db do
-	task :init do
-		touch 'db/data.db' unless File.exist?('db/data.db')
-		ruby "scripts/init_db.rb"
-	end
-
-	task :migrate do
-		exec "sequel -m ./db/migrations -M 1 -E sqlite://./db/data.db"
-	end
-end

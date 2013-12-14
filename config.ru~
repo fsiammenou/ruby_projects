@@ -10,6 +10,6 @@ require './models/post.rb'
 logger = Log4r::Logger.new('MyBloglogger') 
 logger.outputters << Log4r::Outputter.stderr
 logger.outputters << Log4r::FileOutputter.new("logging", :filename => './logfiles/' + Time.now.strftime('%d%b%Y')+ '.log')
-logger.info(Time.now.strftime('%d/%m/%Y %H:%M:%S')+" :: App Started")
+logger.info(Time.now.strftime('%d/%m/%Y %H:%M:%S')+"App Started")
 
 run App.new

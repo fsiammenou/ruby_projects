@@ -171,7 +171,8 @@
                   %tbody
                     - @posts.each do |r|
                       %tr
-                        %td= r[:title]
+                        %td
+                          %a{href: url("/post/#{r[:id}]/view")}= r[:title]
                         - @user = User.filter(:id => r[:user_id]).limit(1)
                         %td= "#{@user[:id][:first_name]} #{@user[:id][:last_name]}"
                         %td= r[:comment_count]

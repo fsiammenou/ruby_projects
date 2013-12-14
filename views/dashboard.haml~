@@ -43,7 +43,7 @@
       / BEGIN TOP NAVIGATION BAR
       .header-inner
         / BEGIN LOGO
-        %a.navbar-brand{href: url("/admin")}
+        %a.navbar-brand{href: url("/")}
           %img.img-responsive{alt: "logo", src: url("assets/img/logo.png")}/
         / END LOGO
         / BEGIN RESPONSIVE MENU TOGGLER
@@ -52,7 +52,9 @@
         / END RESPONSIVE MENU TOGGLER
         / BEGIN TOP NAVIGATION MENU
         %ul.nav.navbar-nav.pull-right
-          / BEGIN USER LOGIN DROPDOWN
+          / BEGIN USER LOGIN DROPDOWN AND HOME LINK
+          %li
+            %a{href: url("/")} Blog Home
           %li.dropdown.user
             %a.dropdown-toggle{"data-close-others" => "true", "data-hover" => "dropdown", "data-toggle" => "dropdown", href: "#"}
               - @auth_user = User[session[:user_id]]
@@ -68,7 +70,7 @@
                 %a{href: url("/logout")}
                   %i.icon-key
                   Log Out
-          / END USER LOGIN DROPDOWN
+          / END USER LOGIN DROPDOWN 
         / END TOP NAVIGATION MENU
       / END TOP NAVIGATION BAR
     / END HEADER
