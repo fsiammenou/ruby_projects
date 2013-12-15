@@ -1,0 +1,23 @@
+ INFO MyBloglogger: 15/12/2013 10:20:49 :: App Started
+ INFO MyBloglogger: 15/12/2013 10:22:36 :: Login failure. Wrong Credentials: fotini/fotini given
+ INFO MyBloglogger: 15/12/2013 10:26:22 :: App Started
+ INFO MyBloglogger: 15/12/2013 10:26:38 :: Login failure. Wrong Credentials: gfhsfgsn/ given
+ INFO MyBloglogger: 15/12/2013 10:26:50 :: User 'username' is Authenticated
+ INFO MyBloglogger: 15/12/2013 10:40:11 :: User 'fotini' is Authenticated
+ INFO MyBloglogger: 15/12/2013 10:46:21 :: App Started
+ INFO MyBloglogger: 15/12/2013 10:47:15 :: App Started
+ INFO MyBloglogger: 15/12/2013 10:48:51 :: User #{prev_username} logged out
+ INFO MyBloglogger: 15/12/2013 10:50:16 :: App Started
+ INFO MyBloglogger: 15/12/2013 10:50:50 :: Login failure. Wrong Credentials: asd/sdf given
+ INFO MyBloglogger: 15/12/2013 10:50:59 :: User 'fotini' is Authenticated
+ INFO MyBloglogger: 15/12/2013 10:51:01 :: User fotini logged out
+ INFO MyBloglogger: 15/12/2013 11:14:49 :: App Started
+ INFO MyBloglogger: 15/12/2013 11:15:04 :: User 'fotini' is Authenticated
+ INFO MyBloglogger: 15/12/2013 11:15:25 :: User 'jdoe' updated
+ INFO MyBloglogger: 15/12/2013 11:15:33 :: Comment 'I remember this movie!' on post 'An Evening With iRobot' is unapproved
+ INFO MyBloglogger: 15/12/2013 11:15:46 :: Comment 'hello' on post '18 Insanely Addictive Font Games' is edited and approved
+ INFO MyBloglogger: 15/12/2013 11:17:35 :: New comment on  '18 Insanely Addictive Font Games' added
+ INFO MyBloglogger: 15/12/2013 11:17:58 :: Comment 'testpost' on post '18 Insanely Addictive Font Games' is approved
+ INFO MyBloglogger: 15/12/2013 11:22:56 :: App Started
+ INFO MyBloglogger: 15/12/2013 11:23:18 :: New comment on  'Vine Focuses On Global Expansion With 19 New Languages' added: 'new comment' 
+ INFO MyBloglogger: 15/12/2013 11:23:37 :: Comment 'new comment' on post 'Vine Focuses On Global Expansion With 19 New Languages' is edited

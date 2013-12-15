@@ -40,6 +40,10 @@
           %li
             %i.icon-tags
             Metronic, Keenthemes, UI Design
+          - if (@loggedinuser != nil) 
+            %li
+              %form{role: "form", action: "/admin/post/#{@post[:id]}/edit", method: "get"}
+                %button.btn.btn-default.theme-btn{type: "submit"} Edit Comment
 
         - @comments = get_comments(@post[:id])
         .media

@@ -3,15 +3,23 @@
   .row
     .col-md-12
       / BEGIN PAGE TITLE & BREADCRUMB
-      %h3.page-title
-        Edit user
-        %small
+      - if params[:id]
+        %h3.page-title
+          Edit user
+          %small
+      - else
+        %h3.page-title
+          Add new user
+          %small
       %ul.page-breadcrumb.breadcrumb
         %li
           %i.icon-home
           %a{href: "/admin"} Home
           %i.icon-angle-right
-        %li Edit user
+        - if params[:id]
+          %li Edit user
+        - else
+          %li Add new user
       / END PAGE TITLE & BREADCRUMB
   / END PAGE HEADER
   / BEGIN PAGE CONTENT
@@ -28,7 +36,10 @@
 
       .portlet.box.grey
         .portlet-title
-          .caption Edit user
+          - if params[:id]
+            .caption Edit user
+          - else
+            .caption Add new user
           .tools
             %a.collapse{href: "javascript:;"}
         .portlet-body.form

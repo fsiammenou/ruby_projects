@@ -52,7 +52,7 @@
             %li
               %a{href: url("/about")} About
             %li
-              %a{href: url("/contact")} Contact
+              %a{href: url("#")} Contact
             %li
               %a{href: url("/login"), target: "_blank"} Admin
             %li.menu-search
@@ -66,7 +66,9 @@
                       %button.btn.theme-btn{type: "submit"} Go
         / BEGIN TOP NAVIGATION MENU
     / END HEADER
+    / BEGIN PAGE CONTAINER
     = yield
+    / END BEGIN PAGE CONTAINER
     / BEGIN FOOTER
     .footer
       .container

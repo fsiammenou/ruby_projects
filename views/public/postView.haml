@@ -43,7 +43,7 @@
           - if (@loggedinuser != nil) 
             %li
               %form{role: "form", action: "/admin/post/#{@post[:id]}/edit", method: "get"}
-                %button.btn.btn-default.theme-btn{type: "submit"} Edit Comment
+                %button.btn.btn-default.theme-btn{type: "submit"} Edit Post
 
         - @comments = get_comments(@post[:id])
         .media

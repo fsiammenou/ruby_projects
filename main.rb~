@@ -115,14 +115,14 @@ class App < Sinatra::Application
   get '/' do
     @posts = Post.filter(:status => 1).limit(5).order(:date_created).reverse
 
-    haml :postsList, :layout => true
+    haml :"public/postsList", :layout => true
   end
 
   #Search results page
   post '/search' do
     @posts = Post.filter(Sequel.like(Sequel.function(:lower, :title), "%#{params[:search]}%"), :status => 1).all
 
-    haml :search, :layout => true
+    haml :"public/search", :layout => true
   end
 
   #Archives page
@@ -130,7 +130,7 @@ class App < Sinatra::Application
     @date = "#{params[:year]}-#{params[:month]}-#{params[:day]}"
     @posts = Post.where(Sequel.like(:date_created, "#{@date}%"), :status => 1).all
 
-    haml :search, :layout => true
+    haml :"public/search", :layout => true
   end
 
   #Pagination
@@ -144,20 +144,22 @@ class App < Sinatra::Application
       redirect "/"
     end
     
-    haml :postsList, :layout => true
+    haml :"public/postsList", :layout => true
   end
 
   #Single post
   get '/post/:id/view' do
     @post = Post.filter(:id => params[:id]).limit(1).all[0]
 
-    haml :postView, :layout => true
+    haml :"public/postView", :layout => true
   end
 
   #Post a comment
   post '/post/:id/comment' do
     comment = Comment.create(:post_id => params[:id], :author => params[:name], :author_email => params[:email], :author_ip => request.env['REMOTE_ADDR'], :date => DateTime.now, :content => params[:message])
 
+    post_edited = Post[params[:id]]
+    insertlog('info', "New comment on  '" + post_edited.title + "' added: '#{params[:message]}' " )
     redirect "/post/#{params[:id]}/view"
   end
 
@@ -198,12 +200,14 @@ class App < Sinatra::Application
       session[:user_id] = nil
       @msg = "Username or password is wrong!"
 
-      haml :"login/login", :layout => :admin_layout
+      haml :"login/login", :layout => false
   end
 
   #Logout
   get "/logout" do
+    prev_username =  @loggedinuser.username
     session[:user_id] = nil
+    insertlog('info', "User '" + prev_username + "' logged out")
     redirect to "/login"
   end
 
@@ -288,7 +292,8 @@ class App < Sinatra::Application
 
     if params[:action] == 'save'
       newpost = Post.create(:user_id => @loggedinuser.id, :title => @title, :content => @content, :date_created => @date_created, :date_modified => @date_modified, :status => @status, :type => @type, :comment_count => 0, :filename => @filename)
-
+      
+      insertlog('info', 'New post created with title: ' + @title)
       redirect("/admin/post/#{newpost.id}/edit?msg=success")
     elsif params[:action] == 'edit' && params[:id]
       post_edited = Post[params[:id]]
@@ -301,7 +306,8 @@ class App < Sinatra::Application
         post_edited.filename = @filename
       end
       post_edited.save
-
+ 
+      insertlog('info', "Post '" + @title + "' edited")
       redirect("/admin/post/#{post_edited.id}/edit?msg=success")
     end
 
@@ -342,38 +348,41 @@ class App < Sinatra::Application
    	comment_edit.content = params[:comment]
     end
     @old_status = comment_edit.status
+    post_edited = Post[comment_edit.post_id]
     if params[:action] == nil 
 	comment_edit.status = params[:status]
         comment_edit.save
         #update relevant post count
-        post_edited = Post[comment_edit.post_id]
         if !params[:status] and (@old_status != nil)
            post_edited.comment_count = ((post_edited.comment_count).to_i - 1).to_i
-        elsif params[:status] and (@old_status == nil)
+           insertlog('info', "Comment '" + comment_edit.content + "' on post '" +post_edited.title+ "' is edited and  unapproved" )
+         elsif params[:status] and (@old_status == nil)
            post_edited.comment_count = ((post_edited.comment_count).to_i + 1).to_i
-        else
+           insertlog('info', "Comment '" + comment_edit.content + "' on post '" + post_edited.title + "' is edited and approved" )
+         else
+           insertlog('info', "Comment '" + comment_edit.content + "' on post '" +post_edited.title+ "' is edited"
            post_edited.comment_count = (post_edited.comment_count).to_i
         end
-
+ 
         post_edited.save
     else
         if params[:action] == 'approve'
            comment_edit.status = 1
            comment_edit.save
            #update relevant post count
-           post_edited = Post[comment_edit.post_id]
            if (@old_status == nil)
               post_edited.comment_count = ((post_edited.comment_count).to_i + 1).to_i
               post_edited.save
+              insertlog('info', "Comment '" + comment_edit.content + "' on post '"+post_edited.title+ "' is approved" )
            end
 	elsif params[:action] == 'unapprove'
            comment_edit.status = nil
            comment_edit.save
            #update relevant post count
-           post_edited = Post[comment_edit.post_id]
            if (@old_status != nil)
               post_edited.comment_count = ((post_edited.comment_count).to_i - 1).to_i
               post_edited.save
+              insertlog('info', "Comment '" + comment_edit.content + "' on post '" + post_edited.title + "' is unapproved" )
            end
          end
     end
@@ -417,7 +426,9 @@ class App < Sinatra::Application
 
     if params[:action] == 'save'
       newuser = User.create(:username => @username, :first_name => @first_name, :last_name => @last_name, :email => @email, :password => @password, :description => @description, :level => @level, :date_registered => @date_registered, :status => @status)
-
+      
+      insertlog('info', "New user '" + @username + "' created" )
+ 
       redirect("/admin/user/#{newuser.id}/edit?msg=success")
     elsif params[:action] == 'edit' && params[:id]
       user_edited = User[params[:id]]
@@ -431,6 +442,8 @@ class App < Sinatra::Application
       user_edited.level = params[:level]
       user_edited.save
 
+      insertlog('info', "User '" + @username + "' updated" )
+ 
       redirect("/admin/user/#{user_edited.id}/edit?msg=success")
     end
 
